@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-// Input validation
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-// Sanitize HTML to prevent injection
 function sanitizeHTML(text: string): string {
   return text
     .replace(/&/g, "&amp;")
@@ -19,18 +12,6 @@ function sanitizeHTML(text: string): string {
 
 export async function POST(request: Request) {
   try {
-    // Validate environment variables
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-      console.error("❌ Missing email credentials in .env");
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Email configuration error",
-        },
-        { status: 500 }
-      );
-    }
-
     const body = await request.json();
 
     // Validate required fields
@@ -44,8 +25,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate email format
-    if (!validateEmail(body.email)) {
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.email)) {
       return NextResponse.json(
         {
           success: false,
@@ -55,12 +37,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create transporter
+    // Create transporter (HARDCODED - NOT SECURE)
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: "eternalsupportservices@gmail.com",
+        pass: "bawt ancw wygb hxxu", // App password
       },
     });
 
@@ -72,7 +54,7 @@ export async function POST(request: Request) {
 
     // Send email
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: "eternalsupportservices@gmail.com",
       to: "eternalsupportservices@gmail.com",
       replyTo: sanitizedEmail,
       subject: "New Website Feedback",
@@ -80,44 +62,28 @@ export async function POST(request: Request) {
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
           <div style="background-color: white; padding: 20px; border-radius: 8px;">
             <h2 style="color: #333;">New Feedback Received</h2>
-
             <p><strong>Name:</strong> ${sanitizedName}</p>
             <p><strong>Email:</strong> ${sanitizedEmail}</p>
             <p><strong>Rating:</strong> ${rating}/5</p>
-
             <h3 style="color: #333; margin-top: 20px;">Feedback</h3>
             <p style="white-space: pre-wrap;">${sanitizedMessage}</p>
-
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-            <p style="color: #999; font-size: 12px;">
-              This email was sent from your website feedback form.
-            </p>
           </div>
         </div>
       `,
     });
-
-    console.log("✅ Feedback email sent successfully");
 
     return NextResponse.json({
       success: true,
       message: "Thank you for your feedback!",
     });
   } catch (error) {
-    console.error("❌ Feedback Error:", error);
-
-    // Better error messages for debugging
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-
+    console.error("Error:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Failed to send feedback. Please try again later.",
-        error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
