@@ -51,23 +51,13 @@ export const serviceLinks = [
     desc: "Outings, medical trips & events",
   },
   {
-    name: "💙 Supported SIL",
-    href: "/services/supported-independent-living",
-    desc: "24/7 routine support & life skills",
-  },
-  {
-    name: "📋 Support Coordination",
-    href: "/services/support-coordination",
-    desc: "NDIS guidance & plan optimization",
-  },
-  {
     name: "🌟 Respite Care",
     href: "/services/respite-care",
     desc: "Short-term stays & caregiver relief",
   },
 ];
 
-/* ---------------- PREMIUM NAVBAR ---------------- */
+/* ---------------- PREMIUM NAVBAR WITH SMART UTILITY BAR ---------------- */
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -75,95 +65,122 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${
-      isScrolled ? "py-4 bg-white/80 backdrop-blur-2xl shadow-sm border-b border-slate-100" : "py-10 bg-transparent"
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-12 h-12 rounded-2xl overflow-hidden transition-transform duration-500 group-hover:rotate-[15deg] shadow-[0_20px_25px_-5px_rgba(62,80,104,0.2)]">
-            <Image
-              src="/Eternal support services.png"
-              alt="Eternal Support Logo"
-              fill
-              sizes="48px"
-              priority
-              className="object-cover"
-            />
+    <header className="fixed top-0 w-full z-[100] flex flex-col">
+      {/* Smart Top Information Bar */}
+      <div 
+        className={`bg-slate-900 text-slate-300 border-b border-slate-800/50 transition-all duration-500 overflow-hidden ${
+          isScrolled ? "h-0 opacity-0" : "py-4 opacity-100"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-2 text-xs md:text-sm font-bold tracking-wider">
+            <a href="tel:0482911697" className="hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
+              <span className="text-base">📞</span> 
+              <span className="font-black uppercase tracking-[0.15em]">0482 911 697</span>
+            </a>
+            <a href="mailto:admin@eternalsupportservice.com.au" className="hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
+              <span className="text-base">✉️</span> 
+              <span className="font-extrabold text-[13px] md:text-[14px]">admin@eternalsupportservice.com.au</span>
+            </a>
           </div>
-          <span className="text-2xl font-black tracking-tighter text-slate-900">
-            Eternal  
-            <span className="font-extrabold" style={{ color: "#3e5068" }}>
-              {" "}Support Services
-            </span>
-          </span>
-        </Link>
-
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-12">
-          <Link href="/" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">Home</Link>
-          
-          <div className="relative py-2" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-            <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">
-              Services <motion.span animate={{ rotate: isDropdownOpen ? 180 : 0 }} className="text-[8px]">▼</motion.span>
-            </button>
-            <AnimatePresence>
-              {isDropdownOpen && (
-                <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px]">
-                  <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_40px_100px_rgba(62,80,104,0.08)] p-6 grid grid-cols-2 gap-2">
-                    {serviceLinks.map((s, i) => (
-                      <Link key={i} href={s.href} className="p-4 rounded-2xl hover:bg-slate-50 transition-all group/item">
-                        <p className="text-[11px] font-black text-slate-900 group-hover/item:text-[#3e5068] tracking-tight">{s.name}</p>
-                        <p className="text-[10px] text-slate-400 font-bold mt-1 leading-normal">{s.desc}</p>
-                      </Link>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <div className="hidden md:flex items-center gap-2 text-[10px] font-black text-slate-400 tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            NDIS Registered Care Network
           </div>
-
-          <Link href="/about" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">About</Link>
-          <Link href="/join">
-            <button className="px-10 py-4 bg-slate-900 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#3e5068] hover:shadow-2xl hover:shadow-[#3e5068]/20 transition-all active:scale-95">
-              Get Started
-            </button>
-          </Link>
         </div>
-
-        <button className="lg:hidden text-slate-900 p-2" onClick={() => setMobileOpen(!mobileOpen)}>
-          <div className="w-6 space-y-1.5">
-            <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "rotate-45 translate-y-2" : "w-6"}`} />
-            <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "opacity-0" : "w-4 ml-auto"}`} />
-            <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : "w-6"}`} />
-          </div>
-        </button>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }} className="fixed inset-0 bg-white z-[90] p-10 flex flex-col justify-center overflow-y-auto gap-6 lg:hidden">
-            <Link href="/page" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#3e5068] transition-colors">Home</Link>
+      {/* Main Navigation Bar */}
+      <nav className={`w-full transition-all duration-700 ${
+        isScrolled ? "py-4 bg-white/80 backdrop-blur-2xl shadow-sm border-b border-slate-100" : "py-8 bg-transparent"
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-12 h-12 rounded-2xl overflow-hidden transition-transform duration-500 group-hover:rotate-[15deg] shadow-[0_20px_25px_-5px_rgba(107,33,168,0.15)]">
+              <Image
+                src="/Eternal support.png"
+                alt="Eternal Support Logo"
+                fill
+                sizes="48px"
+                priority
+                className="object-cover"
+              />
+            </div>
+            <span className="text-2xl font-black tracking-tighter text-slate-900">
+              Eternal  
+              <span className="font-extrabold" style={{ color: "#f33b7b" }}>
+                {" "}Support Services
+              </span>
+            </span>
+          </Link>
+
+          {/* Desktop Links */}
+          <div className="hidden lg:flex items-center gap-12">
+            <Link href="/" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">Home</Link>
             
-            <div className="flex flex-col gap-2 pl-2 border-l-2 border-slate-100 my-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Our Services</p>
-              {serviceLinks.map((s, i) => (
-                <Link key={i} href={s.href} onClick={() => setMobileOpen(false)} className="text-lg font-bold text-slate-700 hover:text-[#3e5068]">
-                  {s.name}
-                </Link>
-              ))}
+            <div className="relative py-2" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">
+                Services <motion.span animate={{ rotate: isDropdownOpen ? 180 : 0 }} className="text-[8px]">▼</motion.span>
+              </button>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px]">
+                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_40px_100px_rgba(107,33_168,0.08)] p-6 grid grid-cols-2 gap-2">
+                      {serviceLinks.map((s, i) => (
+                        <Link key={i} href={s.href} className="p-4 rounded-2xl hover:bg-slate-50 transition-all group/item">
+                          <p className="text-[11px] font-black text-slate-900 group-hover/item:text-[#6b21a8] tracking-tight">{s.name}</p>
+                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-normal">{s.desc}</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <Link href="/about" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#3e5068] transition-colors">About</Link>
-            <Link href="/join" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-[#3e5068] hover:text-slate-900 transition-colors">Join Us</Link>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+            <Link href="/about" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">About</Link>
+            <Link href="/referral">
+              <button className="px-10 py-4 bg-slate-900 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#6b21a8] hover:shadow-2xl hover:shadow-[#6b21a8]/20 transition-all active:scale-95">
+                Submit a Referral
+              </button>
+            </Link>
+          </div>
+
+          <button className="lg:hidden text-slate-900 p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle Navigation">
+            <div className="w-6 space-y-1.5">
+              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "rotate-45 translate-y-2" : "w-6"}`} />
+              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "opacity-0" : "w-4 ml-auto"}`} />
+              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : "w-6"}`} />
+            </div>
+          </button>
+        </div>
+
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }} className="fixed inset-0 bg-white z-[90] p-10 flex flex-col justify-center overflow-y-auto gap-6 lg:hidden">
+              <Link href="/" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#6b21a8] transition-colors">Home</Link>
+              
+              <div className="flex flex-col gap-2 pl-2 border-l-2 border-slate-100 my-2">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Our Services</p>
+                {serviceLinks.map((s, i) => (
+                  <Link key={i} href={s.href} onClick={() => setMobileOpen(false)} className="text-lg font-bold text-slate-700 hover:text-[#6b21a8]">
+                    {s.name}
+                  </Link>
+                ))}
+              </div>
+
+              <Link href="/about" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#6b21a8] transition-colors">About</Link>
+              <Link href="/referral" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-[#6b21a8] hover:text-slate-900 transition-colors">Make a Referral</Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+    </header>
   );
 };
 
@@ -174,48 +191,94 @@ const Hero = () => {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    <section className="relative min-h-[110vh] flex items-center justify-center pt-20 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-white">
-      {/* Dynamic Lighting Ambiance */}
+    <section className="relative min-h-screen lg:min-h-[105vh] flex items-center justify-center pt-48 lg:pt-36 overflow-hidden bg-gradient-to-b from-purple-50/20 via-white to-white">
+      {/* Background Lighting Effects */}
       <motion.div style={{ y, opacity }} className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-[12%] left-[5%] w-[40rem] h-[40rem] bg-[#3e5068]/8 blur-[160px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[5%] w-[35rem] h-[35rem] bg-[#5a7293]/6 blur-[140px] rounded-full" />
+        <div className="absolute top-[12%] left-[5%] w-[40rem] h-[40rem] bg-purple-500/5 blur-[160px] rounded-full" />
+        <div className="absolute bottom-[10%] right-[5%] w-[35rem] h-[35rem] bg-pink-500/5 blur-[140px] rounded-full" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 text-center mt-12">
-        <FadeUp>
-          <div className="inline-flex items-center gap-2 px-5 py-2 mb-10 bg-white border border-slate-100 rounded-full shadow-xl shadow-[#3e5068]/5">
-            <span className="w-2 h-2 rounded-full bg-[#3e5068] animate-ping" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Next-Gen Disability Support</span>
+      {/* Main Grid Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        {/* Left Column */}
+        <div className="lg:col-span-5 flex flex-col justify-center items-center lg:items-start space-y-8 order-2 lg:order-1">
+          <FadeUp delay={0.1}>
+            <div className="relative w-72 h-72 md:w-96 md:h-96 bg-white rounded-[3rem] p-6 shadow-[0_30px_70px_rgba(107,33,168,0.08)] border border-slate-100 flex items-center justify-center group overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-105">
+                <Image
+                  src="/Eternal support.png"
+                  alt="Eternal Support Identity Graphic"
+                  fill
+                  priority
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </FadeUp>
+        </div>
+
+        {/* Right Column */}
+        <div className="lg:col-span-7 space-y-8 text-center lg:text-left order-1 lg:order-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 px-5 py-2 bg-white border border-slate-100 rounded-full shadow-lg shadow-purple-500/5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Next-Gen Disability Support</span>
+              </div>
+            </FadeUp>
+
+            {/* NDIS Provider Badge */}
+            <FadeUp delay={0.4}>
+              <div className="bg-white/90 backdrop-blur-md border border-slate-200/60 p-2.5 rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.03)] flex flex-col items-center gap-1 w-32">
+                <div className="relative w-24 h-10">
+                  <Image 
+                    src="/ndis-logo.png" 
+                    alt="NDIS Registered Provider"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-[7px] font-black uppercase tracking-wider text-slate-400 text-center">
+                  Registered Provider
+                </span>
+              </div>
+            </FadeUp>
           </div>
-        </FadeUp>
 
-        <FadeUp delay={0.1}>
-          <h1 className="text-7xl md:text-[9.5rem] font-black text-slate-900 leading-[0.85] tracking-tight mb-12">
-            Better <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3e5068] via-[#5a7293] to-[#809bb4]">Everyday.</span>
-          </h1>
-        </FadeUp>
+          <FadeUp delay={0.1}>
+            <h1 className="text-6xl md:text-[7.5rem] font-black text-slate-900 leading-[0.9] tracking-tight">
+              Eternal <br /> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6b21a8] via-[#d97706] to-[#ec4899]">
+                Support
+              </span>
+            </h1>
+          </FadeUp>
 
-        <FadeUp delay={0.2}>
-          <p className="max-w-2xl mx-auto text-slate-500 text-lg md:text-xl font-medium leading-relaxed mb-16">
-            We provide specialized infrastructure and human-centric care to ensure independence 
-            is accessible for everyone, everywhere.
-          </p>
-        </FadeUp>
+          <FadeUp delay={0.2}>
+            <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
+              We provide specialized infrastructure and human-centric care to ensure independence 
+              is accessible for everyone, everywhere.
+            </p>
+          </FadeUp>
 
-        <FadeUp delay={0.3}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="/contact">
-              <button className="px-14 py-6 bg-[#3e5068] text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-[#3e5068]/30 hover:-translate-y-1 transition-all active:scale-95">
-                Join our Network
-              </button>
-            </Link>
-            <Link href="/about">
-              <button className="px-10 py-6 bg-white border border-slate-200 text-slate-900 rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
-                Our Vision
-              </button>
-            </Link>
-          </div>
-        </FadeUp>
+          <FadeUp delay={0.3}>
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
+              <Link href="/referral">
+                <button className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-[#6b21a8] to-[#ec4899] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-purple-500/20 hover:-translate-y-1 transition-all active:scale-95">
+                  Submit a Referral
+                </button>
+              </Link>
+              <Link href="/about">
+                <button className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                  Our Vision
+                </button>
+              </Link>
+            </div>
+          </FadeUp>
+        </div>
+
       </div>
     </section>
   );
@@ -229,8 +292,6 @@ const Services = () => {
     { title: "Children's Services", img: "/Children Services.png", href: "/services/childrens-services", desc: "Individualized support for children • Learning and development activities • Social skill development • Recreational programs • School holiday support" },
     { title: "All Ages & Disabilities", img: "/All Ages Disabilities.png", href: "/services/all-ages-disabilities", desc: "Support for all abilities • Personalized care plans • Short-term and long-term support • Independent living assistance • Inclusive community engagement" },
     { title: "Transport Assistance", img: "/Transport Assistance.png", href: "/services/transport-assistance", desc: "Medical appointments • Community outings • Shopping trips • Social events • Daily transportation needs" },
-    { title: "Supported Independent Living (SIL)", img: "/Supported Independent Living.png", href: "/services/supported-independent-living", desc: "Daily routine support • Life skills development • Household management • Personal independence training • 24/7 support options" },
-    { title: "Support Coordination", img: "/Support Coordination.png", href: "/services/support-coordination", desc: "NDIS plan guidance • Service provider coordination • Goal planning • Capacity building • Ongoing support management" },
     { title: "Respite Care", img: "/Respite Care.png", href: "/services/respite-care", desc: "Short-term accommodation • Emergency support • Family caregiver relief • Flexible care arrangements" },
   ];
 
@@ -239,7 +300,7 @@ const Services = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end mb-32">
           <div className="space-y-6">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#3e5068]">Our Services Portfolio</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#d97706]">Our Services Portfolio</p>
             <h2 className="text-5xl md:text-6xl font-black text-slate-900 leading-[0.95] tracking-tighter">Engineered <br /> for Independence.</h2>
           </div>
           <p className="text-slate-400 font-bold text-base md:text-lg leading-relaxed max-w-md lg:ml-auto lg:text-right">
@@ -252,27 +313,26 @@ const Services = () => {
             <Link href={s.href} key={i}>
               <motion.div 
                 whileHover={{ y: -12 }} 
-                className="group relative bg-white rounded-[3.5rem] border border-slate-200/60 shadow-sm overflow-hidden transition-all h-full cursor-pointer hover:shadow-[0_30px_60px_rgba(62,80,104,0.1)] flex flex-col justify-between"
+                className="group relative bg-white rounded-[3.5rem] border border-slate-200/60 shadow-sm overflow-hidden transition-all h-full cursor-pointer hover:shadow-[0_30px_60px_rgba(107,33,168,0.05)] flex flex-col justify-between"
               >
                 <div>
                   <div className="h-64 w-full overflow-hidden relative bg-slate-100">
-                    <Image 
-                      src={s.img} 
-                      alt={s.title} 
+                    <Image
+                      src={s.img}
+                      alt={s.title}
                       fill
-                      sizes="(max-w-768px) 100vw, (max-w-1024px) 50vw, 33vw"
-                      priority={i === 0} // Immediately preloads the first card asset above the fold to keep LCP highly responsive
-                      className="object-cover transition-transform duration-1000 group-hover:scale-105" 
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent" />
                   </div>
                   <div className="p-10">
-                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-[#3e5068] transition-colors">{s.title}</h3>
+                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-[#6b21a8] transition-colors">{s.title}</h3>
                     <p className="text-slate-400 font-medium text-sm leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
                 <div className="px-10 pb-8 pt-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#3e5068] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#d97706] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                     Explore Plan →
                   </span>
                 </div>
@@ -288,17 +348,18 @@ const Services = () => {
 /* ---------------- FINAL CTA ---------------- */
 export const CTA = () => (
   <section className="py-40 px-6 md:px-12 bg-white">
-    <div className="max-w-7xl mx-auto bg-gradient-to-br from-[#3e5068] to-[#253243] rounded-[4rem] md:rounded-[5rem] p-12 md:p-20 text-center text-white shadow-[0_40px_100px_rgba(62,80,104,0.25)] relative overflow-hidden">
+    <div className="max-w-7xl mx-auto bg-gradient-to-br from-[#6b21a8] via-[#ec4899] to-[#b45309] rounded-[4rem] md:rounded-[5rem] p-12 md:p-20 text-center text-white shadow-[0_40px_100px_rgba(107,33,168,0.2)] relative overflow-hidden">
       <div className="absolute -top-10 -right-10 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
       
       <FadeUp>
         <h2 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter leading-none">Start your <br /> better tomorrow.</h2>
-        <p className="text-slate-300 font-medium max-w-xl mx-auto mb-12 text-sm md:text-base leading-relaxed">
+        <p className="text-purple-100 font-medium max-w-xl mx-auto mb-12 text-sm md:text-base leading-relaxed">
           Get in touch with our intake coordinators today to perfectly build your custom routine management profile.
         </p>
-        <Link href="/contact">
-          <button className="px-16 py-6 bg-white text-[#3e5068] rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-103 transition-transform shadow-2xl relative z-10">
-            Register Now
+        <Link href="/referral">
+          <button className="px-16 py-6 bg-white text-[#6b21a8] rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-103 transition-transform shadow-2xl relative z-10">
+            Submit a Referral
           </button>
         </Link>
       </FadeUp>
@@ -310,28 +371,42 @@ export const CTA = () => (
 export const SmartFooter = () => {
   return (
     <footer className="bg-slate-900 text-white pt-24 pb-12 border-t border-slate-800 relative overflow-hidden">
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#3e5068]/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-slate-800/60">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            {/* Swapped fill with explicit responsive dimensions for clear structure layout handling */}
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-800">
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 relative">
               <Image 
-                src="/Eternal support services.png" 
+                src="/Eternal support.png" 
                 alt="Eternal Support Logo" 
-                width={40} 
-                height={40} 
+                fill
+                sizes="40px"
                 className="object-cover" 
               />
             </div>
-            <span className="text-xl font-black tracking-tighter">Eternal <span style={{ color: "#809bb4" }}>Support</span></span>
+            <span className="text-xl font-black tracking-tighter">Eternal <span style={{ color: "#ec4899" }}>Support</span></span>
           </div>
           <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
             Providing premium human-centric infrastructure and individualized NDIS care plans.
           </p>
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Registered NDIS Provider</span>
+          
+          <div className="flex flex-col gap-4 items-start pt-2">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Registered NDIS Provider</span>
+            </div>
+            
+            <div className="relative w-36 h-16 bg-white rounded-2xl px-3 py-2 shadow-inner flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-full">
+                <Image 
+                  src="/ndis-logo.png" 
+                  alt="NDIS Registered Provider Logo" 
+                  fill
+                  sizes="120px"
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -340,7 +415,7 @@ export const SmartFooter = () => {
           <div className="grid grid-cols-1 gap-2">
             {serviceLinks.map((service, index) => (
               <Link key={index} href={service.href} className="text-xs font-bold text-slate-400 hover:text-white transition-colors duration-300 flex items-center gap-1.5 group">
-                <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px]" style={{ color: "#809bb4" }}>→</span>
+                <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px]" style={{ color: "#ec4899" }}>→</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">{service.name.split(" ").slice(1).join(" ") || service.name} Support</span>
               </Link>
             ))}
@@ -353,7 +428,7 @@ export const SmartFooter = () => {
             <Link href="/" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Home Base</Link>
             <Link href="/services" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Core Portfolio</Link>
             <Link href="/about" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Corporate Identity</Link>
-            <Link href="/contact" className="text-xs font-black uppercase tracking-wider transition-colors" style={{ color: "#809bb4" }}>Join Onboarding Registry →</Link>
+            <Link href="/referral" className="text-xs font-black uppercase tracking-wider transition-colors" style={{ color: "#ec4899" }}>Submit a Referral →</Link>
           </div>
         </div>
 
@@ -361,8 +436,8 @@ export const SmartFooter = () => {
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Support Desks</p>
           <div className="space-y-3 text-xs font-medium text-slate-400">
             <p><span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Headquarters Base</span>Melbourne Metro, Victoria, Australia</p>
-            <p><span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Emergency Dispatch</span><span className="text-white font-bold hover:underline cursor-pointer">1300 ETERNAL</span></p>
-            <p><span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Secure Gateway Email</span><span className="text-white font-bold hover:underline cursor-pointer">intake@eternalsupport.com.au</span></p>
+            <p><span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Emergency Dispatch</span><a href="tel:0482911697" className="text-white font-bold hover:underline cursor-pointer">0482 911 697</a></p>
+            <p><span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Secure Gateway Email</span><a href="mailto:admin@eternalsupportservice.com.au" className="text-white font-bold hover:underline cursor-pointer">admin@eternalsupportservice.com.au</a></p>
           </div>
         </div>
       </div>
@@ -379,14 +454,223 @@ export const SmartFooter = () => {
   );
 };
 
-export default function EternalSupportPage() {
+/* ---------------- INTERACTIVE MODAL COMPONENT ---------------- */
+interface FeedbackModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const FeedbackModal = ({ isOpen, onClose }: FeedbackModalProps) => {
+  const [form, setForm] = useState({ name: "", email: "", rating: "", message: "" });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setStatus({ type: "success", text: "Feedback submitted successfully!" });
+        setForm({ name: "", email: "", rating: "", message: "" });
+        setTimeout(() => onClose(), 2000); // Close modal automatically after clear confirmation
+      } else {
+        setStatus({ type: "error", text: data.message || "Failed to submit feedback" });
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus({ type: "error", text: "Something went wrong. Please check your network connection." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <main className="bg-white selection:bg-[#3e5068] selection:text-white antialiased">
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          {/* Backdrop Blur Layer */}
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            onClick={onClose}
+            className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+          />
+
+          {/* Modal Container */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="w-full max-w-xl bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.5)] p-8 md:p-10 relative overflow-hidden text-white z-10"
+          >
+            {/* Ambient Background glows inside form */}
+            <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-pink-500/10 blur-[80px] rounded-full pointer-events-none" />
+
+            {/* Exit Control */}
+            <button 
+              onClick={onClose} 
+              className="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 w-10 h-10 rounded-full flex items-center justify-center transition-all border border-white/10 text-lg"
+            >
+              ✕
+            </button>
+
+            {/* Header Block */}
+            <div className="mb-8">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[9px] font-black uppercase tracking-widest mb-2">
+                Continuous Evaluation
+              </span>
+              <h3 className="text-3xl font-black tracking-tight text-white">Share Your Experience</h3>
+              <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+                Your immediate direct perspective structures our care provision roadmap.
+              </p>
+            </div>
+
+            {/* Form Vector Element */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="Your Name"
+                    className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="Your Email"
+                    className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Experience Scale</label>
+                <div className="relative">
+                  <select
+                    name="rating"
+                    required
+                    value={form.rating}
+                    onChange={handleChange}
+                    className="w-full bg-[#161224] border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs focus:outline-none transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="" className="text-slate-500">Select Rating</option>
+                    <option value="5 Stars">⭐⭐⭐⭐⭐ Excellent Experience</option>
+                    <option value="4 Stars">⭐⭐⭐⭐ Good Support Standard</option>
+                    <option value="3 Stars">⭐⭐⭐ Average Quality</option>
+                    <option value="2 Stars">⭐⭐ Poor Evaluation</option>
+                    <option value="1 Star">⭐ Critical Optimization Needed</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 text-[10px]">▼</div>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Detailed Feedback Record</label>
+                <textarea
+                  name="message"
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="Please write down your detailed testimonial or system support notes here..."
+                  className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Status Message */}
+              <AnimatePresence mode="wait">
+                {status && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className={`p-3 rounded-xl border text-[11px] font-semibold flex items-center gap-2 ${
+                      status.type === "success"
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                    }`}
+                  >
+                    <span>{status.type === "success" ? "✨" : "⚠️"}</span>
+                    <p>{status.text}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Action Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-[#6b21a8] to-[#ec4899] text-white py-4 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:shadow-purple-500/20 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-98 transition-all"
+              >
+                {loading ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Broadcasting Logs...
+                  </>
+                ) : (
+                  "Submit Feedback"
+                )}
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+/* ---------------- MAIN COMPONENT EXPORT ---------------- */
+export default function EternalSupportPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <main className="bg-white selection:bg-[#6b21a8] selection:text-white antialiased min-h-screen relative">
       <Navbar />
       <Hero />
       <Services />
       <CTA />
       <SmartFooter />
+
+      {/* FIXED FLOATING FEEDBACK BUTTON */}
+      <motion.button
+        onClick={() => setModalOpen(true)}
+        whileHover={{ scale: 1.05, x: -4 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-[150] bg-gradient-to-l from-[#ec4899] to-[#6b21a8] text-white pl-4 pr-5 py-3.5 rounded-l-2xl shadow-[0_10px_30px_rgba(236,72,153,0.3)] font-black text-[10px] uppercase tracking-widest flex items-center gap-2 border-y border-l border-white/20 hover:shadow-[0_15px_40px_rgba(236,72,153,0.5)] transition-all"
+      >
+        <span className="text-sm">✍️</span>
+        <span className="hidden sm:inline">Feedback</span>
+      </motion.button>
+
+      {/* FULL MODAL BACKEND STREAM OVERLAY */}
+      <FeedbackModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
 }

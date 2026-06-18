@@ -1,361 +1,252 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Navbar, SmartFooter } from "@/app/page";
+
+/* ---------------- ANIMATION HELPER ---------------- */
+const FadeUp = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 25 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-100px" }}
+    transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+  >
+    {children}
+  </motion.div>
+);
 
 export default function InHomeSupportPage() {
-  // ================= NAVBAR & DROP-DOWN STATE =================
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [serviceOpen, setServiceOpen] = useState(false);
-
-  const dropdownRef = useRef<HTMLLIElement | null>(null);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setServiceOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const services = [
-    { name: "🏠 In-Home Support", desc: "Personal care, daily living & meals" },
-    { name: "👨‍👩‍👧‍👦 Community Participation", desc: "Social, shopping & appointments" },
-    { name: "🧒 Children's Services", desc: "Learning, development & recreation" },
-    { name: "♿ All Ages & Disabilities", desc: "Individual care plans & inclusion" },
-    { name: "🚗 Transport Assistance", desc: "Outings, medical trips & events" },
-    { name: "💙 Supported SIL", desc: "24/7 routine support & life skills" },
-    { name: "📋 Support Coordination", desc: "NDIS guidance & plan optimization" },
-    { name: "🌟 Respite Care", desc: "Short-term stays & caregiver relief" },
-  ];
-
-  const features = [
-    "Personal care assistance",
-    "Daily living support",
-    "Household tasks and cleaning",
-    "Meal preparation",
-    "Medication reminders"
+    {
+      icon: "🧹",
+      title: "Domestic Assistance",
+      desc: "Comprehensive support for standard household tasks including cleaning, laundry, dishwashing, and keeping your living environment organized.",
+      hoverGlow: "hover:border-pink-200 hover:shadow-[0_30px_60px_rgba(236,72,153,0.08)]",
+      iconBg: "group-hover:bg-pink-500/10"
+    },
+    {
+      icon: "🍳",
+      title: "Meal Preparation & Nutrition",
+      desc: "Collaborative meal planning, grocery sourcing, and healthy cooking sessions customized around your personal dietary choices and medical preferences.",
+      hoverGlow: "hover:border-purple-200 hover:shadow-[0_30px_60px_rgba(66,10,81,0.08)]",
+      iconBg: "group-hover:bg-[#420a51]/10"
+    },
+    {
+      icon: "🛀",
+      title: "Personal Care Support",
+      desc: "Dignified, respectful assistance with essential daily routines such as morning/evening transfers, showering, grooming, and dressing.",
+      hoverGlow: "hover:border-cyan-200 hover:shadow-[0_30px_60px_rgba(6,182,212,0.08)]",
+      iconBg: "group-hover:bg-cyan-500/10"
+    },
+    {
+      icon: "💊",
+      title: "Medication Reminders",
+      desc: "Careful monitoring and regular reminders to ensure you follow your prescriptions, health check targets, and therapeutic routines accurately.",
+      hoverGlow: "hover:border-amber-200 hover:shadow-[0_30px_60px_rgba(217,119,6,0.08)]",
+      iconBg: "group-hover:bg-amber-500/10"
+    },
+    {
+      icon: "🛠️",
+      title: "Home Environmental Safety",
+      desc: "Assessing hazard spaces and coordinating setup adjustments or assistive tools to keep your physical living layout securely accessible.",
+      hoverGlow: "hover:border-indigo-200 hover:shadow-[0_30px_60px_rgba(99,102,241,0.08)]",
+      iconBg: "group-hover:bg-indigo-500/10"
+    },
+    {
+      icon: "📈",
+      title: "Skills & Routine Building",
+      desc: "Step-by-step guidance designed to strengthen your personal autonomy, manage domestic bills, and direct your own household systems.",
+      hoverGlow: "hover:border-emerald-200 hover:shadow-[0_30px_60px_rgba(16,185,129,0.08)]",
+      iconBg: "group-hover:bg-emerald-500/10"
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-white selection:bg-[#3e5068] selection:text-white flex flex-col antialiased">
-      
-      {/* Background Ambience Layers */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-[10%] right-[-10%] w-[50rem] h-[50rem] bg-[#3e5068]/5 blur-[160px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[20%] left-[-5%] w-[42rem] h-[42rem] bg-slate-400/10 blur-[130px] rounded-full" />
-      </div>
+    <main className="bg-[#faf8fc] selection:bg-[#420a51] selection:text-white antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
+      {/* Top Global Ecosystem Navigation */}
+      <Navbar />
 
-      {/* ================= PREMIUM NAVBAR ================= */}
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
-        isScrolled ? "py-4 bg-white/80 backdrop-blur-2xl shadow-sm" : "py-8 bg-transparent"
-      }`}>
-        <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-          
-          {/* Corporate Brand Identity */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-12 h-12 rounded-2xl overflow-hidden shadow-[0_15px_30px_rgba(62,80,104,0.15)] transition-transform duration-500 group-hover:rotate-[12deg]">
-              <Image
-                src="/Eternal support services.png"
-                alt="Eternal Support Logo"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">
-              Eternal <span className="text-[#3e5068]">Support Services</span>
-            </span>
-          </Link>
+      {/* ---------------- 1. HERO SECTION ---------------- */}
+      <section className="relative pt-52 pb-28 overflow-hidden bg-gradient-to-b from-purple-50/30 via-[#faf8fc] to-[#faf8fc]">
+        {/* Balanced Brand Color Ambient Accents */}
+        <div className="absolute top-[10%] right-[-10%] w-[55rem] h-[55rem] bg-gradient-to-br from-[#420a51]/15 to-pink-500/10 blur-[180px] rounded-full pointer-events-none animate-pulse duration-[8s]" />
+        <div className="absolute top-[20%] left-[-15%] w-[45rem] h-[45rem] bg-gradient-to-tr from-cyan-500/10 via-transparent to-amber-500/10 blur-[140px] rounded-full pointer-events-none animate-pulse duration-[12s]" />
 
-          {/* Desktop Navigation Links */}
-          <ul className="hidden lg:flex gap-12 items-center">
-            <li>
-              <Link href="/" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">
-                Home
-              </Link>
-            </li>
-
-            {/* Micro-interactive Dropdown Container */}
-            <li 
-              ref={dropdownRef} 
-              className="relative"
-              onMouseEnter={() => setServiceOpen(true)}
-              onMouseLeave={() => setServiceOpen(false)}
-            >
-              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#3e5068] transition-colors focus:outline-none">
-                Services <motion.span animate={{ rotate: serviceOpen ? 180 : 0 }} className="text-[8px] inline-block">▼</motion.span>
-              </button>
-
-              <AnimatePresence>
-                {serviceOpen && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 15, scale: 0.95 }} 
-                    animate={{ opacity: 1, y: 0, scale: 1 }} 
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }} 
-                    className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[560px]"
-                  >
-                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_40px_100px_rgba(62,80,104,0.08)] p-6 grid grid-cols-2 gap-2">
-                      {services.map((item, i) => (
-                        <Link
-                          key={i}
-                          href="/#services"
-                          className="p-4 rounded-2xl hover:bg-slate-50 transition-all group/item"
-                        >
-                          <p className="text-[11px] font-black text-slate-900 group-hover/item:text-[#3e5068] tracking-tight">{item.name}</p>
-                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-normal">{item.desc}</p>
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </li>
-
-            <li>
-              <Link href="/#about" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#3e5068] transition-colors">
-                Contact
-              </Link>
-            </li>
-          </ul>
-
-          {/* Desktop Call to Action */}
-          <div className="hidden lg:block">
-            <Link href="/join">
-              <button className="px-9 py-4 bg-slate-900 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#3e5068] shadow-xl hover:shadow-[#3e5068]/20 transition-all active:scale-95">
-                Get Started
-              </button>
-            </Link>
-          </div>
-
-          {/* Mobile Hamburger Control Icon */}
-          <button
-            className="lg:hidden text-slate-900 p-2 focus:outline-none"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle Menu"
-          >
-            <div className="w-6 space-y-1.5">
-              <div className={`h-0.5 bg-current transition-all ${mobileMenuOpen ? "rotate-45 translate-y-2" : "w-6"}`} />
-              <div className={`h-0.5 bg-current transition-all ${mobileMenuOpen ? "opacity-0" : "w-4 ml-auto"}`} />
-              <div className={`h-0.5 bg-current transition-all ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : "w-6"}`} />
-            </div>
-          </button>
-        </div>
-
-        {/* Mobile Flyout Navigation Drawer Overlay */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, x: "100%" }} 
-              animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: "100%" }} 
-              style={{ willChange: "transform" }}
-              className="fixed inset-0 bg-white z-[90] p-10 flex flex-col justify-center gap-6 lg:hidden overflow-y-auto"
-            >
-              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#3e5068]">Home</Link>
-              <div className="flex flex-col gap-2 pl-2 border-l-2 border-slate-100 my-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Our Portfolio</p>
-                {services.map((item, i) => (
-                  <Link key={i} href="/#services" onClick={() => setMobileMenuOpen(false)} className="text-base font-bold text-slate-700 hover:text-[#3e5068]">
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <Link href="/#about" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#3e5068]">About</Link>
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#3e5068]">Contact</Link>
-              <Link href="/join" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black tracking-tighter text-[#3e5068]">Join Registry</Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
-
-      {/* ================= PORTFOLIO PROFILE DETAILS ================= */}
-      <section className="flex-1 max-w-7xl w-full mx-auto px-8 pt-44 pb-32 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-        
-        {/* Left Side Column: Strategic Descriptions */}
-        <div className="lg:col-span-6 space-y-6">
-          <div className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest w-fit border bg-[#3e5068]/5 border-[#3e5068]/10 text-[#3e5068]">
-            Service Unit 01
-          </div>
-          
-          <h1 className="text-6xl md:text-7xl font-black text-slate-900 leading-[0.9] tracking-tighter">
-            In-Home <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3e5068] to-[#809bb4]">
-              Support Ecosystem.
-            </span>
-          </h1>
-          
-          <p className="text-slate-500 font-medium text-lg leading-relaxed max-w-xl pt-2">
-            Personalized, professional care frameworks delivered seamlessly within the absolute comfort and secure familiarity of your own private residence.
-          </p>
-
-          {/* Luxury Feature List Blocks */}
-          <div className="pt-8 border-t border-slate-100 space-y-3 max-w-md">
-            {features.map((feature, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className="flex items-center gap-4 p-4 bg-slate-50/50 hover:bg-slate-50 rounded-2xl border border-slate-100/40 transition-colors"
-              >
-                <div className="w-6 h-6 rounded-lg bg-[#3e5068]/10 flex items-center justify-center font-bold text-xs text-[#3e5068]">
-                  ✓
+        <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Narrative Block */}
+            <div className="lg:col-span-7 space-y-7 text-center lg:text-left order-2 lg:order-1">
+              <FadeUp>
+                <div className="inline-flex items-center gap-2 px-5 py-2 bg-white border border-purple-100 rounded-full shadow-[0_10px_30px_rgba(66,10,81,0.04)] ring-1 ring-purple-900/5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#420a51]">
+                    NDIS In-Home Care Track
+                  </span>
                 </div>
-                <span className="text-sm font-bold text-slate-800 tracking-tight">{feature}</span>
-              </motion.div>
-            ))}
-          </div>
+              </FadeUp>
 
-          <div className="pt-6">
-            <Link href="/join">
-              <button className="px-10 py-5 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 bg-[#3e5068] shadow-[0_20px_35px_-5px_rgba(62,80,104,0.2)]">
-                Request Support Matrix
-              </button>
-            </Link>
-          </div>
-        </div>
+              <FadeUp delay={0.1}>
+                <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-black text-slate-900 tracking-tight leading-[0.95]">
+                  Independent <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#420a51] via-pink-600 to-amber-500">
+                    In-Home Support
+                  </span>
+                </h1>
+              </FadeUp>
 
-        {/* Right Side Column: Media Showcase Area */}
-        <div className="lg:col-span-6 relative w-full aspect-[4/3] lg:aspect-square">
-          <div className="absolute inset-0 bg-[#3e5068]/5 blur-3xl rounded-[3rem] scale-95 -z-10" />
-          
-          <div className="w-full h-full rounded-[3.5rem] border border-slate-100 overflow-hidden bg-slate-50 shadow-[0_40px_100px_rgba(62,80,104,0.06)] relative group">
-            <Image
-              src="/In-Home.png"
-              alt="In Home Care Architecture"
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            {/* Elegant overlay card containing brand guidelines */}
-            <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/70 backdrop-blur-md rounded-3xl border border-white/20 shadow-sm">
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#3e5068] mb-1">Human Infrastructure</p>
-              <p className="text-xs font-bold text-slate-800 leading-normal">
-                Our in-home care services strictly follow the official brand identity manual layout guidelines for standard universal disability frameworks.
-              </p>
+              <FadeUp delay={0.2}>
+                <p className="text-slate-600 text-base md:text-lg font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
+                  Maintain control over your environment with customized home support structures. We provide assistance directly in your living space to make daily routines straightforward and safe.
+                </p>
+              </FadeUp>
+
+              <FadeUp delay={0.3}>
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+                  <Link href="/referral" className="w-full sm:w-auto">
+                    <button className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-[#420a51] via-[#a35fa8] to-pink-600 hover:from-pink-600 hover:to-amber-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-[0_20px_45px_rgba(66,10,81,0.25)] hover:shadow-pink-500/40 hover:-translate-y-0.5 transition-all active:scale-95 duration-300">
+                      Get Care Setup
+                    </button>
+                  </Link>
+
+                  <Link href="/services" className="w-full sm:w-auto">
+                    <button className="w-full sm:w-auto px-10 py-5 bg-white border border-purple-100 text-slate-800 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-purple-50/50 transition-all shadow-sm">
+                      All Core Portfolios
+                    </button>
+                  </Link>
+                </div>
+              </FadeUp>
             </div>
+
+            {/* Right Balanced Media Frame */}
+            <div className="lg:col-span-5 order-1 lg:order-2">
+              <FadeUp delay={0.4}>
+                <div className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-square rounded-[3.5rem] md:rounded-[4rem] overflow-hidden border-4 border-white bg-gradient-to-br from-purple-100 to-pink-50 shadow-[0_40px_100px_rgba(66,10,81,0.12)] group ring-1 ring-purple-100/60">
+                  <img
+                    src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=1200"
+                    alt="Friendly healthcare professional or caregiver providing support in a comfortable independent home environment"
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent" />
+
+                  {/* Floating Glassmorphic Context Badge */}
+                  <div className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-xl border border-white/40 rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.05)] p-5 sm:p-6 max-w-[200px] sm:max-w-xs transition-transform duration-500 group-hover:-translate-y-1 ring-1 ring-purple-900/5">
+                    <h3 className="font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-[#420a51] to-pink-600">
+                      Comfort
+                    </h3>
+                    <p className="text-slate-600 font-extrabold text-xs sm:text-sm mt-1 leading-none">
+                      In Your Own Space
+                    </p>
+                  </div>
+                </div>
+              </FadeUp>
+            </div>
+
           </div>
         </div>
-
       </section>
 
-      {/* ================= SMART FOOTER ================= */}
-      <footer className="bg-slate-900 text-white pt-24 pb-12 border-t border-slate-800 relative overflow-hidden">
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#3e5068]/20 blur-[120px] rounded-full pointer-events-none" />
+      {/* ---------------- 2. ANALYTICS METRICS RIBBON ---------------- */}
+      <section className="py-16 bg-slate-900 text-white relative overflow-hidden border-y border-slate-800">
+        <div className="absolute bottom-[-20%] right-[-10%] w-[35rem] h-[35rem] bg-pink-600/15 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-[-20%] left-[-10%] w-[35rem] h-[35rem] bg-[#420a51]/30 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
+        
+        <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 divide-y md:divide-y-0 md:divide-x divide-slate-800/80 text-center">
+            <div className="pt-4 md:pt-0">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-pink-200">Flexible</h2>
+              <p className="text-slate-400 font-extrabold text-[10px] uppercase tracking-[0.2em] mt-2">Hourly & Roster Scheduling</p>
+            </div>
 
-        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-slate-800/60">
+            <div className="pt-4 md:pt-0">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">Vetted</h2>
+              <p className="text-slate-400 font-extrabold text-[10px] uppercase tracking-[0.2em] mt-2">Screened Support Staff</p>
+            </div>
+
+            <div className="pt-4 md:pt-0">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-amber-200">Matched</h2>
+              <p className="text-slate-400 font-extrabold text-[10px] uppercase tracking-[0.2em] mt-2">Compatible Care Placements</p>
+            </div>
+
+            <div className="pt-4 md:pt-0">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-200">Secure</h2>
+              <p className="text-slate-400 font-extrabold text-[10px] uppercase tracking-[0.2em] mt-2">Safe Environment Protocols</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- 3. CORE SERVICE DELIVERABLES ---------------- */}
+      <section className="py-32 bg-purple-50/10 relative">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <FadeUp>
+            <div className="text-center mb-24 space-y-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.5em] text-pink-600">Domestic Deliverables</p>
+              <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-none">
+                Domestic & Home Support Focus
+              </h2>
+              <p className="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                Every element of our in-home support portfolio works dynamically to keep your living environments reliable, clean, and perfectly suited to your active goals.
+              </p>
+            </div>
+          </FadeUp>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <FadeUp key={index} delay={index * 0.05}>
+                <div className={`group h-full bg-white p-10 rounded-[3.5rem] border border-purple-100 shadow-[0_10px_25px_rgba(66,10,81,0.01)] transition-all duration-500 flex flex-col justify-between ${service.hoverGlow}`}>
+                  <div>
+                    <div className={`w-16 h-16 bg-[#faf8fc] shadow-inner border border-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-8 transition-colors duration-500 ${service.iconBg}`}>
+                      {service.icon}
+                    </div>
+
+                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-[#420a51] transition-colors">
+                      {service.title}
+                    </h3>
+
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed">
+                      {service.desc}
+                    </p>
+                  </div>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- 4. PREMIUM CONTEXTUAL CTA CARD ---------------- */}
+      <section className="pb-36 pt-8 px-6 md:px-12 bg-[#faf8fc]">
+        <div className="max-w-7xl mx-auto bg-gradient-to-br from-[#420a51] via-pink-600 to-amber-600 rounded-[4rem] md:rounded-[5rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-[0_40px_100px_rgba(66,10,81,0.25)]">
+          {/* Subtle Accent Glow Block */}
+          <div className="absolute -bottom-10 -left-10 w-96 h-96 bg-white/10 blur-[110px] rounded-full pointer-events-none" />
+          <div className="absolute top-[-20%] right-[-10%] w-[40rem] h-[40rem] bg-amber-500/10 blur-[130px] rounded-full pointer-events-none" />
           
-          {/* Column 1: Ecosystem Brand Overview */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden">
-                <Image
-                  src="/Eternal support services.png"
-                  alt="Eternal Support Logo"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-xl font-black tracking-tighter">
-                Eternal <span className="text-[#809bb4]">Support</span>
-              </span>
-            </div>
-            <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
-              Providing luxury human-centric infrastructure and premium individualized care plans across standard universal frameworks.
+          <div className="relative z-10 max-w-3xl mx-auto space-y-6 sm:space-y-8">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">
+              Transform Your <br /> Home Routine Today
+            </h2>
+
+            <p className="text-purple-50 font-medium text-sm md:text-base max-w-xl mx-auto leading-relaxed opacity-90">
+              Connect with Eternal Support Services today. Our intake specialist coordination desk stands ready to align your home environment care parameters completely around your safety and preferences.
             </p>
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Registered NDIS Provider</span>
+
+            <div className="pt-4">
+              <Link href="/referral">
+                <button className="px-16 py-6 bg-white text-[#420a51] hover:text-pink-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-103 transition-all duration-300 shadow-2xl relative z-10">
+                  Arrange In-Home Care
+                </button>
+              </Link>
             </div>
-          </div>
-
-          {/* Column 2: Aligned Services Directory Tracking */}
-          <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Services Directory</p>
-            <div className="grid grid-cols-1 gap-2">
-              {services.map((service, index) => {
-                // Safe split implementation to avoid runtime failures on strings without white space splits
-                const splitName = service.name.split(" ");
-                const cleanName = splitName.length > 1 ? splitName.slice(1).join(" ") : service.name;
-                
-                return (
-                  <Link 
-                    key={index} 
-                    href="/#services" 
-                    className="text-xs font-bold text-slate-400 hover:text-white transition-colors duration-300 flex items-center gap-1.5 group"
-                  >
-                    <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-[#809bb4]">→</span>
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">{cleanName} Support</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Column 3: Corporate Directory Mapping Links */}
-          <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ecosystem Links</p>
-            <div className="flex flex-col gap-3.5">
-              <Link href="/" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Home Base</Link>
-              <Link href="/#services" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Core Portfolio</Link>
-              <Link href="/#about" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Corporate Intelligence</Link>
-              <Link href="/join" className="text-xs font-black uppercase tracking-wider transition-colors text-[#809bb4]">Join Onboarding Registry →</Link>
-            </div>
-          </div>
-
-          {/* Column 4: Operational Dispatch & Contact Desks */}
-          <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Support Desks</p>
-            <div className="space-y-3 text-xs font-medium text-slate-400">
-              <div>
-                <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Headquarters Base</span>
-                <p className="leading-relaxed">Melbourne Metro, Victoria, Australia</p>
-              </div>
-              <div>
-                <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Emergency Dispatch</span>
-                <span className="text-white font-bold hover:underline cursor-pointer">1300 ETERNAL (Placeholder)</span>
-              </div>
-              <div>
-                <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Secure Gateway Email</span>
-                <span className="text-white font-bold hover:underline cursor-pointer">intake@eternalsupport.com.au</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Footer Sub-Bar Copyright Area */}
-        <div className="max-w-7xl mx-auto px-8 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] text-center md:text-left">
-            © 2026 Eternal Support Ecosystem. All Rights Reserved.
-          </p>
-          <div className="flex gap-6 text-[9px] font-black uppercase tracking-widest text-slate-500">
-            <a href="#" className="hover:text-white transition-colors">Privacy Shield</a>
-            <a href="#" className="hover:text-white transition-colors">NDIS Compliance Charter</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Care</a>
           </div>
         </div>
-      </footer>
+      </section>
 
-    </div>
+      {/* System Footer Element */}
+      <SmartFooter />
+    </main>
   );
 }
