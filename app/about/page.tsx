@@ -101,7 +101,7 @@ export default function AboutPage() {
           <FadeUp>
             <div className="relative w-full aspect-[4/3] rounded-[4rem] overflow-hidden border border-slate-100 shadow-[0_40px_80px_rgba(107,33,168,0.08)] group">
               <Image
-                src="/homecare.png"
+                src="/Daily Living.png"
                 alt="Empathetic caregiver interaction under Eternal Support Services"
                 fill
                 sizes="(max-w-1024px) 100vw, 50vw"

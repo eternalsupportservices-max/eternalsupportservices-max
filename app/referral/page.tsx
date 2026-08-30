@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Comprehensive list of global country codes and flags sorted alphabetically
 const countryCodes = [
   { code: "+93", flag: "🇦🇫", name: "Afghanistan" },
   { code: "+355", flag: "🇦🇱", name: "Albania" },
@@ -231,7 +230,7 @@ const countryCodes = [
 ];
 
 export default function ReferralPage() {
-  const [form, setForm] = useState({
+  const initialForm = {
     fullName: "",
     gender: "",
     dob: "",
@@ -252,71 +251,52 @@ export default function ReferralPage() {
     enquirerCountryCode: "+61",
     enquirerPhone: "",
     enquirerEmail: "",
-  });
+  };
+
+  const [form, setForm] = useState(initialForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/referral", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      console.log("Response Status:", response.status);
       const responseText = await response.text();
-      
-      let data;
+      let data: { success?: boolean; message?: string };
+
       try {
         data = JSON.parse(responseText);
-      } catch (e) {
-        console.error("Failed to parse JSON:", e);
-        alert("Server error: Invalid response. Check console logs.");
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+        alert("Server error: Invalid response. Please check your API route.");
         return;
       }
 
-      if (data.success) {
-        alert("Referral submitted successfully!");
-        setForm({
-          fullName: "",
-          gender: "",
-          dob: "",
-          phoneCountryCode: "+61",
-          phone: "",
-          email: "",
-          address: "",
-          suburb: "",
-          state: "",
-          postcode: "",
-          disability: "",
-          supportFrequency: "",
-          fundingType: "",
-          additionalDetails: "",
-          referralFor: "Myself",
-          enquirerName: "",
-          relationship: "",
-          enquirerCountryCode: "+61",
-          enquirerPhone: "",
-          enquirerEmail: "",
-        });
-      } else {
-        alert(data.message || "Submission failed");
+      if (!response.ok || !data.success) {
+        alert(data.message || "Submission failed. Please try again.");
+        return;
       }
+
+      alert("Referral submitted successfully!");
+      setForm(initialForm);
     } catch (error) {
       console.error("Submit Error:", error);
-      alert("Failed to submit referral. Check console logs.");
+      alert("Failed to submit referral. Please check your internet connection and API route.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -325,339 +305,316 @@ export default function ReferralPage() {
     return match ? match.flag : "🏳️";
   };
 
+  const inputClass =
+    "w-full bg-white border border-slate-200 hover:border-slate-300 focus:border-[#6b21a8] rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10";
+
+  const selectClass =
+    "w-full bg-white border border-slate-200 hover:border-slate-300 focus:border-[#6b21a8] rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 appearance-none cursor-pointer";
+
+  const labelClass =
+    "text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1";
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-50/30 via-slate-50 to-slate-100/80 py-20 px-4 md:px-8 relative overflow-hidden">
-      {/* Background Ambient Lights */}
-      <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-purple-500/5 blur-[160px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[35rem] h-[35rem] bg-pink-500/5 blur-[140px] rounded-full pointer-events-none" />
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-slate-50 to-pink-50 px-3 py-6 sm:px-5 lg:px-8 lg:py-10 relative overflow-hidden">
+      {/* Ambient background */}
+      <div className="absolute -top-40 -right-40 w-[32rem] h-[32rem] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-[32rem] h-[32rem] bg-pink-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[3rem] shadow-[0_40px_100px_rgba(15,23,42,0.06)] p-8 md:p-16 relative z-10">
-        
-        {/* Top Actions Block featuring Back Button */}
-        <div className="flex items-center justify-between mb-8">
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            className="group inline-flex items-center gap-2.5 px-4 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 hover:border-slate-300 rounded-full text-xs font-bold text-slate-600 transition-all duration-200 shadow-sm"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={2.5} 
-              stroke="currentColor" 
-              className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-            Back
-          </button>
-        </div>
+      <div className="relative z-10 max-w-[1500px] mx-auto">
+        {/* Back button */}
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="group mb-5 inline-flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 shadow-sm transition-all"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+          Back
+        </button>
 
-        {/* Header Block */}
-        <div className="mb-14 border-b border-slate-100 pb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 bg-purple-50 border border-purple-100 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#6b21a8]" />
-            <span className="text-[9px] font-black uppercase tracking-[0.25em] text-[#6b21a8]">Intake Registry</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
-            NDIS Referral <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6b21a8] to-[#ec4899]">Intake Portal</span>
-          </h1>
-          <p className="text-slate-400 font-medium mt-3 text-sm md:text-base max-w-xl">
-            Please fill out the detailed matrix below. Submitting this form compiles a structural briefing transferred securely via your mail native client.
-          </p>
-        </div>
+        {/* LANDSCAPE CARD */}
+        <div className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_35px_100px_rgba(15,23,42,0.10)] overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
+            {/* LEFT INFORMATION PANEL */}
+            <aside className="relative overflow-hidden bg-slate-950 text-white p-7 sm:p-9 lg:p-10">
+              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-purple-600/30 blur-3xl" />
+              <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-pink-600/20 blur-3xl" />
 
-        <form onSubmit={handleSubmit} className="space-y-12">
-          
-          {/* SECTION 1: Participant Details */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs">01</span>
-              <h2 className="text-lg font-black uppercase tracking-wider text-slate-800">Participant Core Profile</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Full Name *</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  placeholder="John Doe"
-                  value={form.fullName}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="inline-flex self-start items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-300" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.22em] text-purple-200">Intake Registry</span>
+                </div>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Gender Identification</label>
-                <select
-                  name="gender"
-                  value={form.gender}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 appearance-none cursor-pointer"
-                >
-                  <option value="">Select Option</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other / Prefer Not To Disclose</option>
-                </select>
-              </div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-[1.05]">
+                  NDIS Referral
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300 mt-1">
+                    Intake Portal
+                  </span>
+                </h1>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Date of Birth</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={form.dob}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 cursor-pointer"
-                />
-              </div>
+                <p className="text-slate-300 text-sm leading-6 mt-5">
+                  Complete the referral details to help our team understand participant needs and coordinate appropriate support services.
+                </p>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Primary Contact Phone</label>
-                <div className="flex gap-2">
-                  <div className="relative w-32 flex items-center bg-slate-50/50 border border-slate-200 focus-within:border-[#6b21a8] focus-within:bg-white rounded-2xl transition-all focus-within:ring-4 focus-within:ring-purple-500/10">
-                    <span className="absolute left-3 text-base pointer-events-none select-none">
-                      {getSelectedFlag(form.phoneCountryCode)}
-                    </span>
-                    <select
-                      name="phoneCountryCode"
-                      value={form.phoneCountryCode}
-                      onChange={handleChange}
-                      className="w-full h-full bg-transparent pl-9 pr-2 py-4 text-sm font-semibold text-slate-700 outline-none cursor-pointer appearance-none text-right"
-                    >
-                      {countryCodes.map((c, idx) => (
-                        <option key={`part-${c.code}-${idx}`} value={c.code}>
-                          {c.code} ({c.name})
-                        </option>
-                      ))}
-                    </select>
+                <div className="mt-8 space-y-3">
+                  {[
+                    ["01", "Participant Profile"],
+                    ["02", "Location Details"],
+                    ["03", "Support Requirements"],
+                    ["04", "Referral Source"],
+                  ].map(([number, title]) => (
+                    <div key={number} className="flex items-center gap-3 rounded-xl bg-white/5 border border-white/10 px-3 py-3">
+                      <span className="w-7 h-7 shrink-0 rounded-lg bg-white text-slate-900 flex items-center justify-center text-[10px] font-black">
+                        {number}
+                      </span>
+                      <span className="text-xs font-bold text-slate-200">{title}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-auto pt-8">
+                  <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                    <p className="text-[9px] uppercase tracking-[0.2em] font-black text-purple-200">Privacy</p>
+                    <p className="text-xs leading-5 text-slate-400 mt-2">
+                      Please provide accurate information. Sensitive participant information should only be submitted through your secure production environment.
+                    </p>
                   </div>
-                  <input
-                    type="tel"
-                    name="phone"
-                    placeholder="400 000 000"
-                    value={form.phone}
-                    onChange={handleChange}
-                    className="flex-1 bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                  />
+                </div>
+              </div>
+            </aside>
+
+            {/* RIGHT FORM PANEL */}
+            <section className="p-5 sm:p-7 lg:p-9 xl:p-10">
+              <div className="flex items-start justify-between gap-5 border-b border-slate-100 pb-6 mb-7">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.25em] text-[#6b21a8] mb-2">Referral Application</p>
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Participant information</h2>
+                  <p className="text-slate-400 text-xs sm:text-sm mt-2 max-w-2xl">
+                    Enter the required participant, contact, support and referral information below.
+                  </p>
+                </div>
+                <div className="hidden sm:flex shrink-0 items-center justify-center w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100">
+                  <svg className="w-6 h-6 text-[#6b21a8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19a3 3 0 1 0-6 0m9-11a6 6 0 1 1-12 0 6 6 0 0 1 12 0Zm-3.5 6.5L18 17" />
+                  </svg>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="example@domain.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* SECTION 2: Address Information */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs">02</span>
-              <h2 className="text-lg font-black uppercase tracking-wider text-slate-800">Geographic Location</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Street Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Unit 1, 123 Care Street"
-                  value={form.address}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Suburb</label>
-                <input
-                  type="text"
-                  name="suburb"
-                  placeholder="Melbourne"
-                  value={form.suburb}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">State</label>
-                <input
-                  type="text"
-                  name="state"
-                  placeholder="VIC"
-                  value={form.state}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5 md:col-span-2 lg:col-span-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Postcode</label>
-                <input
-                  type="text"
-                  name="postcode"
-                  placeholder="3000"
-                  value={form.postcode}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* SECTION 3: Support Architecture */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs">03</span>
-              <h2 className="text-lg font-black uppercase tracking-wider text-slate-800">Support Metrics & Logistics</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Primary Disability Diagnoses</label>
-                <input
-                  type="text"
-                  name="disability"
-                  placeholder="e.g., Intellectual Disability, ASD"
-                  value={form.disability}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Funding Management Stream</label>
-                <select
-                  name="fundingType"
-                  value={form.fundingType}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 appearance-none cursor-pointer"
-                >
-                  <option value="">Select Stream Type</option>
-                  <option value="NDIS - Agency Managed">NDIS (Agency Managed)</option>
-                  <option value="NDIS - Plan Managed">NDIS (Plan Managed)</option>
-                  <option value="NDIS - Self Managed">NDIS (Self Managed)</option>
-                  <option value="TAC">TAC Covered</option>
-                  <option value="Private Funding">Private / Commercial Brokerage</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Requested Care Frequency Target</label>
-                <select
-                  name="supportFrequency"
-                  value={form.supportFrequency}
-                  onChange={handleChange}
-                  className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-semibold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 appearance-none cursor-pointer"
-                >
-                  <option value="">Select Desired Frequency</option>
-                  <option value="Daily">Daily High Intensity Routine Care</option>
-                  <option value="Weekly">Weekly Standard Scheduled Hours</option>
-                  <option value="Fortnightly">Fortnightly Cycle Check-Ins</option>
-                  <option value="Monthly">Monthly Strategy & Coordination Only</option>
-                  <option value="As Required">Flexible / Ad-Hoc / Respite Blocks</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Additional Detailed Strategy / Request Notes</label>
-              <textarea
-                rows={5}
-                name="additionalDetails"
-                placeholder="Detail core requirements, specific goals, preferred scheduling windows, behavioral requirements, or dietary factors..."
-                value={form.additionalDetails}
-                onChange={handleChange}
-                className="w-full bg-slate-50/50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-3xl p-5 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 resize-none"
-              />
-            </div>
-          </div>
-
-          {/* SECTION 4: Enquirer Origin Source */}
-          <div className="space-y-6 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs">04</span>
-              <h2 className="text-lg font-black uppercase tracking-wider text-slate-800">Filing Source / Relationship</h2>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">I am completing this application for:</label>
-              <select
-                name="referralFor"
-                value={form.referralFor}
-                onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#6b21a8] focus:bg-white rounded-2xl p-4 text-sm font-black text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10 appearance-none cursor-pointer"
-              >
-                <option value="Myself">Myself (Self Referral Intake)</option>
-                <option value="Someone Else">Someone Else (Third-Party Agent/Family/Coordinator)</option>
-              </select>
-            </div>
-
-            {/* Smart Framer-Motion Animated Dropdown Container */}
-            <AnimatePresence initial={false}>
-              {form.referralFor === "Someone Else" && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="overflow-hidden"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 mt-2">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Your Full Name</label>
-                      <input
-                        type="text"
-                        name="enquirerName"
-                        placeholder="Jane Doe"
-                        value={form.enquirerName}
-                        onChange={handleChange}
-                        className="w-full bg-white border border-slate-200 focus:border-[#6b21a8] rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 pl-1">Relationship to Participant</label>
-                      <input
-                        type="text"
-                        name="relationship"
-                        placeholder="e.g., Support Coordinator, Parent"
-                        value={form.relationship}
-                        onChange={handleChange}
-                        className="w-full bg-white border border-slate-200 focus:border-[#6b21a8] rounded-2xl p-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-purple-500/10"
-                      />
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* SECTION 1 */}
+                <section>
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">01</span>
+                    <div>
+                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">Participant Core Profile</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Basic participant contact information</p>
                     </div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
-          {/* Form Submit Block */}
-          <div className="pt-6">
-            <button
-              type="submit"
-              className="w-full py-5 bg-gradient-to-r from-[#6b21a8] to-[#ec4899] hover:opacity-95 text-white font-black uppercase tracking-wider rounded-2xl shadow-lg transition-all focus:ring-4 focus:ring-purple-500/20 text-sm"
-            >
-              Submit Strategic Referral Intake
-            </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-1.5 xl:col-span-2">
+                      <label className={labelClass}>Full Name *</label>
+                      <input type="text" name="fullName" placeholder="John Doe" value={form.fullName} onChange={handleChange} required className={inputClass} />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Gender Identification</label>
+                      <select name="gender" value={form.gender} onChange={handleChange} className={selectClass}>
+                        <option value="">Select Option</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other / Prefer Not To Disclose</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Date of Birth</label>
+                      <input type="date" name="dob" value={form.dob} onChange={handleChange} className={inputClass} />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2 xl:col-span-2">
+                      <label className={labelClass}>Primary Contact Phone</label>
+                      <div className="flex gap-2">
+                        <div className="relative w-[125px] shrink-0">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base pointer-events-none select-none z-10">
+                            {getSelectedFlag(form.phoneCountryCode)}
+                          </span>
+                          <select name="phoneCountryCode" value={form.phoneCountryCode} onChange={handleChange} className={`${selectClass} pl-9 pr-1`} aria-label="Phone country code">
+                            {countryCodes.map((c, idx) => (
+                              <option key={`part-${c.code}-${idx}`} value={c.code}>{c.code} ({c.name})</option>
+                            ))}
+                          </select>
+                        </div>
+                        <input type="tel" name="phone" placeholder="400 000 000" value={form.phone} onChange={handleChange} className={inputClass} />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2 xl:col-span-2">
+                      <label className={labelClass}>Email Address</label>
+                      <input type="email" name="email" placeholder="example@domain.com" value={form.email} onChange={handleChange} className={inputClass} />
+                    </div>
+                  </div>
+                </section>
+
+                {/* SECTION 2 */}
+                <section className="border-t border-slate-100 pt-7">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">02</span>
+                    <div>
+                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">Geographic Location</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Participant residential details</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-1.5 md:col-span-2 xl:col-span-4">
+                      <label className={labelClass}>Street Address</label>
+                      <input type="text" name="address" placeholder="Unit 1, 123 Care Street" value={form.address} onChange={handleChange} className={inputClass} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Suburb</label>
+                      <input type="text" name="suburb" placeholder="Melbourne" value={form.suburb} onChange={handleChange} className={inputClass} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>State</label>
+                      <input type="text" name="state" placeholder="VIC" value={form.state} onChange={handleChange} className={inputClass} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Postcode</label>
+                      <input type="text" name="postcode" placeholder="3000" value={form.postcode} onChange={handleChange} className={inputClass} />
+                    </div>
+                  </div>
+                </section>
+
+                {/* SECTION 3 */}
+                <section className="border-t border-slate-100 pt-7">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">03</span>
+                    <div>
+                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">Support Metrics & Logistics</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Support needs and funding information</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-1.5 md:col-span-2">
+                      <label className={labelClass}>Primary Disability Diagnoses</label>
+                      <input type="text" name="disability" placeholder="e.g., Intellectual Disability, ASD" value={form.disability} onChange={handleChange} className={inputClass} />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2">
+                      <label className={labelClass}>Funding Management Stream</label>
+                      <select name="fundingType" value={form.fundingType} onChange={handleChange} className={selectClass}>
+                        <option value="">Select Stream Type</option>
+                        <option value="NDIS - Agency Managed">NDIS (Agency Managed)</option>
+                        <option value="NDIS - Plan Managed">NDIS (Plan Managed)</option>
+                        <option value="NDIS - Self Managed">NDIS (Self Managed)</option>
+                        <option value="TAC">TAC Covered</option>
+                        <option value="Private Funding">Private / Commercial Brokerage</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2 xl:col-span-4">
+                      <label className={labelClass}>Requested Care Frequency Target</label>
+                      <select name="supportFrequency" value={form.supportFrequency} onChange={handleChange} className={selectClass}>
+                        <option value="">Select Desired Frequency</option>
+                        <option value="Daily">Daily High Intensity Routine Care</option>
+                        <option value="Weekly">Weekly Standard Scheduled Hours</option>
+                        <option value="Fortnightly">Fortnightly Cycle Check-Ins</option>
+                        <option value="Monthly">Monthly Strategy & Coordination Only</option>
+                        <option value="As Required">Flexible / Ad-Hoc / Respite Blocks</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2 xl:col-span-4">
+                      <label className={labelClass}>Additional Detailed Strategy / Request Notes</label>
+                      <textarea rows={4} name="additionalDetails" placeholder="Detail core requirements, specific goals, preferred scheduling windows, behavioral requirements, or dietary factors..." value={form.additionalDetails} onChange={handleChange} className={`${inputClass} resize-none rounded-2xl`} />
+                    </div>
+                  </div>
+                </section>
+
+                {/* SECTION 4 */}
+                <section className="border-t border-slate-100 pt-7">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">04</span>
+                    <div>
+                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">Filing Source / Relationship</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Tell us who is completing this referral</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelClass}>I am completing this application for:</label>
+                    <select name="referralFor" value={form.referralFor} onChange={handleChange} className={selectClass}>
+                      <option value="Myself">Myself (Self Referral Intake)</option>
+                      <option value="Someone Else">Someone Else (Third-Party Agent/Family/Coordinator)</option>
+                    </select>
+                  </div>
+
+                  <AnimatePresence initial={false}>
+                    {form.referralFor === "Someone Else" && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                          <div className="flex flex-col gap-1.5">
+                            <label className={labelClass}>Your Full Name</label>
+                            <input type="text" name="enquirerName" placeholder="Jane Doe" value={form.enquirerName} onChange={handleChange} className={inputClass} />
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className={labelClass}>Relationship to Participant</label>
+                            <input type="text" name="relationship" placeholder="e.g., Support Coordinator, Parent" value={form.relationship} onChange={handleChange} className={inputClass} />
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className={labelClass}>Your Phone</label>
+                            <div className="flex gap-2">
+                              <div className="relative w-[125px] shrink-0">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base pointer-events-none select-none z-10">
+                                  {getSelectedFlag(form.enquirerCountryCode)}
+                                </span>
+                                <select name="enquirerCountryCode" value={form.enquirerCountryCode} onChange={handleChange} className={`${selectClass} pl-9 pr-1`} aria-label="Enquirer country code">
+                                  {countryCodes.map((c, idx) => (
+                                    <option key={`enq-${c.code}-${idx}`} value={c.code}>{c.code} ({c.name})</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <input type="tel" name="enquirerPhone" placeholder="400 000 000" value={form.enquirerPhone} onChange={handleChange} className={inputClass} />
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className={labelClass}>Your Email Address</label>
+                            <input type="email" name="enquirerEmail" placeholder="example@domain.com" value={form.enquirerEmail} onChange={handleChange} className={inputClass} />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </section>
+
+                {/* SUBMIT */}
+                <div className="border-t border-slate-100 pt-7 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-xs font-bold text-slate-700">Ready to submit your referral?</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Review your information before submitting.</p>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto min-w-[260px] py-4 px-7 bg-gradient-to-r from-[#6b21a8] to-[#ec4899] hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider rounded-xl shadow-lg shadow-purple-500/20 transition-all focus:ring-4 focus:ring-purple-500/20 text-xs"
+                  >
+                    {isSubmitting ? "Submitting Referral..." : "Submit Strategic Referral Intake"}
+                  </button>
+                </div>
+              </form>
+            </section>
           </div>
-        </form>
+        </div>
       </div>
     </main>
   );

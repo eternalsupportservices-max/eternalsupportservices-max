@@ -1,784 +1,1227 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
-/* ---------------- TYPES & INTERFACES ---------------- */
+/* =========================================================
+   TYPES
+========================================================= */
+
 interface FadeUpProps {
   children: React.ReactNode;
   delay?: number;
 }
 
-/* ---------------- GLOBAL COMPONENTS & ANIMATIONS ---------------- */
-export const FadeUp = ({ children, delay = 0 }: FadeUpProps) => (
-  <motion.div
-    initial={{ opacity: 0, y: 25 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-  >
-    {children}
-  </motion.div>
-);
+/* =========================================================
+   FADE UP ANIMATION
+========================================================= */
 
-/* ---------------- SERVICE DATA SYNCED ACROSS COMPONENTS ---------------- */
+export const FadeUp = ({
+  children,
+  delay = 0,
+}: FadeUpProps) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{
+        once: true,
+        margin: "-100px",
+      }}
+      transition={{
+        duration: 0.8,
+        delay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/* =========================================================
+   SERVICES DATA
+========================================================= */
+
 export const serviceLinks = [
   {
-    name: "🏠 In-Home Support",
-    href: "/services/in-home-support",
-    desc: "Personal care & daily living support",
+    name: "In-Home Support",
+    href: "/services",
+    desc: "Personal care and daily living support",
   },
   {
-    name: "👨‍👩‍👧‍👦 Community Participation",
-    href: "/services/community-participation",
-    desc: "Social, shopping & appointments",
+    name: "Personal Care",
+    href: "/services",
+    desc: "Individual personal care assistance",
   },
   {
-    name: "🧒 Children's Services",
-    href: "/services/childrens-services",
-    desc: "Learning, development & recreation",
+    name: "Domestic Assistance and Cleaning",
+    href: "/services",
+    desc: "Household tasks and cleaning support",
   },
   {
-    name: "♿ All Ages & Disabilities",
-    href: "/services/all-ages-disabilities",
-    desc: "Individual care plans & inclusion",
+    name: "Community Participation",
+    href: "/services",
+    desc: "Social, community and recreational support",
   },
   {
-    name: "🚗 Transport Assistance",
-    href: "/services/transport-assistance",
-    desc: "Outings, medical trips & events",
+    name: "Transport Assistance",
+    href: "/services",
+    desc: "Appointments, shopping and outings",
   },
   {
-    name: "🌟 Respite Care",
-    href: "/services/respite-care",
-    desc: "Short-term stays & caregiver relief",
+    name: "Respite Care",
+    href: "/services",
+    desc: "Short-term support and caregiver relief",
+  },
+  {
+    name: "Children's Support",
+    href: "/services",
+    desc: "Support for children and young people",
+  },
+  {
+    name: "Supported Independent Living",
+    href: "/services",
+    desc: "Available once approved",
+  },
+  {
+    name: "Support Coordination",
+    href: "/services",
+    desc: "Available once approved",
+  },
+  {
+    name: "Daily Living and Life Skills",
+    href: "/services",
+    desc: "Available once approved",
   },
 ];
 
-/* ---------------- NAVBAR ---------------- */
+/* =========================================================
+   NAVBAR
+========================================================= */
+
 export const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [scrollOpacity, setScrollOpacity] = useState(1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 50;
-      setIsScrolled(scrolled);
-
-      // Fully dissolve to 0 by 300px of scroll
-      const opacity = Math.max(0, 1 - window.scrollY / 300);
-      setScrollOpacity(opacity);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <header className="fixed top-0 w-full z-[100] flex flex-col">
-      {/* Smart Top Information Bar */}
-      <div
-        className={`bg-slate-900 text-slate-300 border-b border-slate-800/50 transition-all duration-500 overflow-hidden ${
-          isScrolled ? "h-0 opacity-0" : "py-4 opacity-100"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-2 text-xs md:text-sm font-bold tracking-wider">
-            <a href="tel:0482911697" className="hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
-              <span className="text-base">📞</span>
-              <span className="font-black uppercase tracking-[0.15em]">0482 911 697</span>
-            </a>
-            <a href="mailto:admin@eternalsupportservice.com.au" className="hover:text-white transition-colors flex items-center gap-2.5 py-0.5">
-              <span className="text-base">✉️</span>
-              <span className="font-extrabold text-[13px] md:text-[14px]">admin@eternalsupportservice.com.au</span>
-            </a>
-          </div>
-          <div className="hidden md:flex items-center gap-2 text-[10px] font-black text-slate-400 tracking-widest uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            NDIS Registered Care Network
-          </div>
+    <header className="fixed top-0 left-0 w-full z-50">
+
+      {/* TOP BAR */}
+      <div className="bg-slate-950 text-white border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-2">
+
+          <a
+            href="tel:0482911697"
+            className="text-xs font-bold hover:text-pink-400 transition-colors"
+          >
+            📞 0482 911 697
+          </a>
+
+          <a
+            href="mailto:admin@eternalsupportservice.com.au"
+            className="text-xs font-bold hover:text-pink-400 transition-colors"
+          >
+            ✉ admin@eternalsupportservice.com.au
+          </a>
+
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
-      <nav
-        className={`w-full transition-all duration-700 ${
-          isScrolled
-            ? "py-4 bg-white/80 backdrop-blur-2xl shadow-sm border-b border-slate-100"
-            : "py-8 bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+      {/* MAIN NAV */}
+      <nav className="bg-[#F4F0E8]/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
 
-          {/* ── LOGO: dissolve + emboss ── */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 group"
-            style={{
-              opacity: scrollOpacity,
-              transition: "opacity 0.35s ease-out",
-              pointerEvents: scrollOpacity === 0 ? "none" : "auto",
-            }}
-          >
-            {/* Logo image container — raised emboss idle, pressed deboss on hover */}
-            <div
-              className="relative w-12 h-12 rounded-2xl overflow-hidden transition-all duration-500 group-hover:rotate-[15deg]"
-              style={{
-                boxShadow:
-                  "3px 3px 7px rgba(0,0,0,0.20), -3px -3px 7px rgba(255,255,255,0.90)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.boxShadow =
-                  "inset 3px 3px 6px rgba(0,0,0,0.18), inset -3px -3px 6px rgba(255,255,255,0.80)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.boxShadow =
-                  "3px 3px 7px rgba(0,0,0,0.20), -3px -3px 7px rgba(255,255,255,0.90)";
-              }}
-            >
+          {/* LOGO */}
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shadow-md">
               <Image
                 src="/Eternal support.png"
-                alt="Eternal Support Logo"
+                alt="Eternal Support Services Logo"
                 fill
-                sizes="48px"
+                sizes="56px"
                 priority
-                className="object-cover transition-all duration-500 group-hover:brightness-110 group-hover:contrast-110"
+                className="object-cover"
               />
             </div>
 
-            {/* Brand text */}
-            <span className="text-2xl font-black tracking-tighter text-slate-900 transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#6b21a8] group-hover:to-[#ec4899]">
-              Eternal
-              <span
-                className="font-extrabold transition-colors duration-500"
-                style={{ color: "#f33b7b" }}
-              >
-                {" "}Support Services
-              </span>
-            </span>
+            <div className="hidden sm:block">
+              <div className="text-lg md:text-xl font-black text-slate-950">
+                Eternal
+              </div>
+              <div className="text-lg md:text-xl font-black text-[#ec4899]">
+                Support Services
+              </div>
+            </div>
           </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden lg:flex items-center gap-12">
-            <Link href="/" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">
+          {/* DESKTOP MENU */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link
+              href="/"
+              className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 hover:text-[#6b21a8] transition-colors"
+            >
               Home
             </Link>
 
-            <div
-              className="relative py-2"
-              onMouseEnter={() => setIsDropdownOpen(true)}
-              onMouseLeave={() => setIsDropdownOpen(false)}
+            <Link
+              href="/services"
+              className="text-[11px] font-black uppercase tracking-[0.18em] text-[#6b21a8]"
             >
-              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">
-                Services{" "}
-                <motion.span animate={{ rotate: isDropdownOpen ? 180 : 0 }} className="text-[8px]">
-                  ▼
-                </motion.span>
-              </button>
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-[600px]"
-                  >
-                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_40px_100px_rgba(107,33,168,0.08)] p-6 grid grid-cols-2 gap-2">
-                      {serviceLinks.map((s, i) => (
-                        <Link key={i} href={s.href} className="p-4 rounded-2xl hover:bg-slate-50 transition-all group/item">
-                          <p className="text-[11px] font-black text-slate-900 group-hover/item:text-[#6b21a8] tracking-tight">
-                            {s.name}
-                          </p>
-                          <p className="text-[10px] text-slate-400 font-bold mt-1 leading-normal">{s.desc}</p>
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+              Services
+            </Link>
 
-            <Link href="/about" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#6b21a8] transition-colors">
+            <Link
+              href="/#how-it-works"
+              className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 hover:text-[#6b21a8] transition-colors"
+            >
+              How It Works
+            </Link>
+
+            <Link
+              href="/about"
+              className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 hover:text-[#6b21a8] transition-colors"
+            >
               About
             </Link>
-            <Link href="/referral">
-              <button className="px-10 py-4 bg-slate-900 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#6b21a8] hover:shadow-2xl hover:shadow-[#6b21a8]/20 transition-all active:scale-95">
-                Submit a Referral
-              </button>
+
+            <Link
+              href="/referral"
+              className="px-6 py-3 rounded-xl bg-[#6b21a8] hover:bg-[#581c87] text-white text-[11px] font-black uppercase tracking-wider transition-all shadow-md"
+            >
+              Make a Referral
             </Link>
           </div>
 
-          <button
-            className="lg:hidden text-slate-900 p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle Navigation"
+          {/* MOBILE HOME BUTTON */}
+          <Link
+            href="/referral"
+            className="md:hidden px-4 py-3 rounded-xl bg-[#6b21a8] text-white text-[9px] font-black uppercase tracking-wider"
           >
-            <div className="w-6 space-y-1.5">
-              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "rotate-45 translate-y-2" : "w-6"}`} />
-              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "opacity-0" : "w-4 ml-auto"}`} />
-              <div className={`h-0.5 bg-current transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : "w-6"}`} />
-            </div>
-          </button>
-        </div>
+            Referral
+          </Link>
 
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "100%" }}
-              className="fixed inset-0 bg-white z-[90] p-10 flex flex-col justify-center overflow-y-auto gap-6 lg:hidden"
-            >
-              <Link href="/" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#6b21a8] transition-colors">
-                Home
-              </Link>
-              <div className="flex flex-col gap-2 pl-2 border-l-2 border-slate-100 my-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Our Services</p>
-                {serviceLinks.map((s, i) => (
-                  <Link key={i} href={s.href} onClick={() => setMobileOpen(false)} className="text-lg font-bold text-slate-700 hover:text-[#6b21a8]">
-                    {s.name}
-                  </Link>
-                ))}
-              </div>
-              <Link href="/about" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-slate-900 hover:text-[#6b21a8] transition-colors">
-                About
-              </Link>
-              <Link href="/referral" onClick={() => setMobileOpen(false)} className="text-4xl font-black tracking-tighter text-[#6b21a8] hover:text-slate-900 transition-colors">
-                Make a Referral
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </div>
       </nav>
     </header>
   );
 };
 
-/* ---------------- HERO SECTION ---------------- */
+/* =========================================================
+   HERO
+========================================================= */
+
 const Hero = () => {
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 500], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+
+  const opacity = useTransform(
+    scrollY,
+    [0, 500],
+    [1, 0]
+  );
 
   return (
-    <section className="relative min-h-screen lg:min-h-[105vh] flex items-center justify-center pt-48 lg:pt-36 overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20" />
+    <section className="relative min-h-screen flex items-center pt-44 pb-24 overflow-hidden">
 
-      <motion.div style={{ y, opacity }} className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-[12%] left-[5%] w-[40rem] h-[40rem] bg-purple-500/5 blur-[160px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[5%] w-[35rem] h-[35rem] bg-pink-500/5 blur-[140px] rounded-full" />
+      {/* =====================================================
+          BACKGROUND IMAGE
+      ===================================================== */}
+
+      <div className="absolute inset-0 z-0 overflow-hidden">
+
+        <Image
+          src="/Personal Care.png"
+          alt="Eternal Support Services"
+          fill
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover opacity-75 scale-[1.02]"
+        />
+
+        <div className="absolute inset-0 bg-[#F4F0E8]/25" />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F4F0E8]/45 via-[#F4F0E8]/20 to-transparent" />
+
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#F4F0E8] via-[#F4F0E8]/40 to-transparent" />
+
+      </div>
+
+      {/* =====================================================
+          DECORATIVE GRADIENTS
+      ===================================================== */}
+
+      <motion.div
+        style={{
+          opacity,
+        }}
+        className="absolute inset-0 pointer-events-none z-[1]"
+      >
+
+        <div className="absolute top-[10%] left-[-5%] w-[35rem] h-[35rem] bg-purple-500/10 blur-[150px] rounded-full" />
+
+        <div className="absolute bottom-[5%] right-[-5%] w-[30rem] h-[30rem] bg-pink-500/10 blur-[140px] rounded-full" />
+
       </motion.div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* =====================================================
+          HERO CONTENT
+      ===================================================== */}
 
-        {/* LEFT — Clean floating logo with enhanced emboss effect */}
-        <div className="lg:col-span-5 flex justify-center lg:justify-start order-2 lg:order-1">
-          <FadeUp delay={0.1}>
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              whileHover={{ scale: 1.05 }}
-              className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] group cursor-pointer"
-            >
-              {/* Emboss ring — raised at rest, pressed inset on hover */}
-              <div
-                className="absolute inset-0 rounded-full transition-all duration-500"
-                style={{
-                  boxShadow:
-                    "14px 14px 32px rgba(107,33,168,0.16), -14px -14px 32px rgba(255,255,255,1), 6px 6px 16px rgba(236,72,153,0.08)",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "inset 10px 10px 24px rgba(107,33,168,0.18), inset -10px -10px 24px rgba(255,255,255,0.90), inset 4px 4px 10px rgba(236,72,153,0.10)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "14px 14px 32px rgba(107,33,168,0.16), -14px -14px 32px rgba(255,255,255,1), 6px 6px 16px rgba(236,72,153,0.08)";
-                }}
-              />
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
 
-              {/* Gradient background layer */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-100 via-pink-50 to-purple-50 group-hover:from-purple-150 transition-all duration-700" />
+        <div className="max-w-6xl pt-24 sm:pt-28 md:pt-32">
 
-              {/* Soft glow layer */}
-              <div className="absolute inset-6 rounded-full bg-gradient-to-br from-purple-200/50 via-pink-100/30 to-transparent blur-2xl group-hover:from-purple-300/60 transition-all duration-700" />
+          {/* =====================================================
+              NDIS LOGO - RIGHT SIDE
+          ===================================================== */}
 
-              {/* Logo */}
-              <Image
-                src="/Eternal support.png"
-                alt="Eternal Support Logo"
-                fill
-                priority
-                sizes="(max-width:768px) 320px, 448px"
-                className="object-contain drop-shadow-xl relative z-10"
-              />
-            </motion.div>
-          </FadeUp>
-        </div>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.3,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              absolute
+              top-[115px]
+              right-[30px]
+              sm:right-[50px]
+              md:right-[70px]
+              lg:right-[100px]
+              xl:right-[130px]
+              z-20
+              w-[120px]
+              sm:w-[150px]
+              md:w-[190px]
+              lg:w-[230px]
+              xl:w-[260px]
+            "
+          >
+            <Image
+              src="/NDIS.png"
+              alt="NDIS"
+              width={612}
+              height={323}
+              priority
+              className="
+                w-full
+                h-auto
+                object-contain
+                opacity-100
+                mix-blend-multiply
+                drop-shadow-[0_12px_25px_rgba(0,0,0,0.12)]
+              "
+            />
+          </motion.div>
 
-        {/* RIGHT — Text content */}
-        <div className="lg:col-span-7 space-y-8 text-center lg:text-left order-1 lg:order-2">
+          {/* TITLE */}
 
-          {/* Top row: badge + NDIS */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <FadeUp>
-              <div className="inline-flex items-center gap-2 px-5 py-2 bg-white border border-slate-100 rounded-full shadow-lg shadow-purple-500/5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Next-Gen Disability Support</span>
-              </div>
-            </FadeUp>
-            <FadeUp delay={0.4}>
-              <div className="bg-white/90 backdrop-blur-md border border-slate-200/60 p-2.5 rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.03)] flex flex-col items-center gap-1 w-32">
-                <div className="relative w-24 h-10">
-                  <Image src="/ndis-logo.png" alt="NDIS Registered Provider" fill sizes="96px" className="object-contain" />
-                </div>
-                <span className="text-[7px] font-black uppercase tracking-wider text-slate-400 text-center">Registered Provider</span>
-              </div>
-            </FadeUp>
-          </div>
-
-          {/* Heading */}
-          <FadeUp delay={0.1}>
-            <h1 className="text-6xl md:text-[7.5rem] font-black text-slate-900 leading-[0.9] tracking-tight">
-              Eternal <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6b21a8] via-[#d97706] to-[#ec4899]">
-                Support
-              </span>
-            </h1>
-          </FadeUp>
-
-          {/* Description */}
           <FadeUp delay={0.2}>
-            <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-              We provide specialized infrastructure and human-centric care to ensure independence is accessible for everyone, everywhere.
-            </p>
+
+            <h1 className="text-[58px] sm:text-[75px] md:text-[95px] lg:text-[105px] xl:text-[115px] font-black leading-[0.82] tracking-[-0.07em] text-slate-950">
+
+              Support that
+
+              <br />
+
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6b21a8] via-[#b026d3] to-[#ec4899]">
+                puts you first.
+              </span>
+
+            </h1>
+
           </FadeUp>
 
-          {/* Buttons */}
+          {/* DESCRIPTION */}
+
           <FadeUp delay={0.3}>
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
-              <Link href="/referral">
-                <button className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-[#6b21a8] to-[#ec4899] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-purple-500/20 hover:-translate-y-1 transition-all active:scale-95">
-                  Submit a Referral
-                </button>
+
+            <p className="mt-10 max-w-3xl text-lg md:text-2xl text-slate-600 font-medium leading-relaxed">
+              Empowering people of all abilities to live independently, confidently and on their own terms through personalised, compassionate support.
+            </p>
+
+          </FadeUp>
+
+          {/* BUTTONS */}
+
+          <FadeUp delay={0.4}>
+
+            <div className="flex flex-col sm:flex-row gap-4 mt-10">
+
+              <Link
+                href="/referral"
+                className="inline-flex justify-center items-center px-10 py-5 rounded-2xl bg-gradient-to-r from-[#6b21a8] to-[#ec4899] text-white font-black text-xs uppercase tracking-[0.18em] shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+              >
+                Make a Referral →
               </Link>
-              <Link href="/about">
-                <button className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
-                  Our Vision
-                </button>
-              </Link>
+
+              <a
+                href="tel:0482911697"
+                className="inline-flex justify-center items-center px-10 py-5 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-900 font-black text-xs uppercase tracking-[0.18em] shadow-lg hover:-translate-y-1 transition-all"
+              >
+                Contact Us Today
+              </a>
+
             </div>
+
           </FadeUp>
 
         </div>
+
       </div>
+
     </section>
   );
 };
 
-/* ---------------- SERVICES GRID ---------------- */
+/* =========================================================
+   WHO WE SUPPORT
+========================================================= */
+
+const WhoWeSupport = () => {
+  return (
+    <section className="relative min-h-[480px] flex items-center py-28 md:py-32 overflow-hidden">
+
+      <div className="absolute inset-0 z-0 overflow-hidden">
+
+        <Image
+          src="/Domestic Assistance.png"
+          alt="People receiving personalised support"
+          fill
+          sizes="100vw"
+          quality={75}
+          className="object-cover object-center opacity-[95%]"
+        />
+
+        <div className="absolute inset-0 bg-[#F4F0E8]/55" />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F4F0E8]/95 via-[#F4F0E8]/75 to-[#F4F0E8]/35" />
+
+        <div className="absolute inset-0 bg-white/10" />
+
+        <div className="absolute -top-32 -left-32 w-[30rem] h-[30rem] rounded-full bg-purple-400/10 blur-[130px]" />
+
+        <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-pink-400/10 blur-[130px]" />
+
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#F4F0E8] to-transparent" />
+
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
+
+        <FadeUp>
+
+          <div className="max-w-4xl">
+
+            <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-[#d97706] mb-6">
+              Who We Support
+            </p>
+
+            <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-[76px] font-black text-slate-950 tracking-[-0.055em] leading-[0.95] max-w-4xl">
+              Support designed around you.
+            </h2>
+
+            <p className="mt-7 max-w-2xl text-base md:text-lg text-slate-600 leading-relaxed">
+              We support participants with different needs, goals,
+              preferences and levels of independence. Our approach
+              is personalised, respectful and focused on helping
+              each person live with greater confidence and choice.
+            </p>
+
+          </div>
+
+        </FadeUp>
+
+      </div>
+
+    </section>
+  );
+};
+
+/* =========================================================
+   SERVICES
+========================================================= */
+
 const Services = () => {
   const serviceItems = [
-    { title: "In-Home Support", img: "/In-Home.png", href: "/services/in-home-support", desc: "Personal care assistance • Daily living support • Household tasks and cleaning • Meal preparation • Medication reminders" },
-    { title: "Community Participation", img: "/Community Participation.png", href: "/services/community-participation", desc: "Social and recreational activities • Community access support • Shopping assistance • Appointment assistance • Transport support" },
-    { title: "Children's Services", img: "/Children Services.png", href: "/services/childrens-services", desc: "Individualized support for children • Learning and development activities • Social skill development • Recreational programs • School holiday support" },
-    { title: "All Ages & Disabilities", img: "/All Ages Disabilities.png", href: "/services/all-ages-disabilities", desc: "Support for all abilities • Personalized care plans • Short-term and long-term support • Independent living assistance • Inclusive community engagement" },
-    { title: "Transport Assistance", img: "/Transport Assistance.png", href: "/services/transport-assistance", desc: "Medical appointments • Community outings • Shopping trips • Social events • Daily transportation needs" },
-    { title: "Respite Care", img: "/Respite Care.png", href: "/services/respite-care", desc: "Short-term accommodation • Emergency support • Family caregiver relief • Flexible care arrangements" },
+    {
+      title: "In-Home Support",
+      img: "/Daily Living.png",
+      href: "/services",
+      desc: "Personal care, daily living support and assistance at home.",
+    },
+    {
+      title: "Personal Care",
+      img: "/Personal Care.png",
+      href: "/services",
+      desc: "Respectful and personalised assistance with personal care.",
+    },
+    {
+      title: "Domestic Assistance and Cleaning",
+      img: "/Domestic Assistance.png",
+      href: "/services",
+      desc: "Household tasks, cleaning and maintaining a comfortable home.",
+    },
+    {
+      title: "Community Participation",
+      img: "/Community Participation.png",
+      href: "/services",
+      desc: "Social activities, community access, shopping and appointments.",
+    },
+    {
+      title: "Transport Assistance",
+      img: "/Transport Assistance.jpg",
+      href: "/services",
+      desc: "Transport for appointments, shopping, outings and activities.",
+    },
+    {
+      title: "Respite Care",
+      img: "/Respite Care.png",
+      href: "/services",
+      desc: "Flexible short-term support and caregiver relief.",
+    },
+    {
+      title: "Children's Support",
+      img: "/Children Services.png",
+      href: "/services",
+      desc: "Individualised support for children and young people.",
+    },
+    {
+      title: "Supported Independent Living",
+      img: "/Supported Independent Living.png",
+      href: "/services",
+      desc: "Available once approved.",
+    },
+    {
+      title: "Support Coordination",
+      img: "/Support Coordination.png",
+      href: "/services",
+      desc: "We help participants understand and use their NDIS plan with confidence.",
+    },
+    {
+      title: "Daily Living and Life Skills",
+      img: "/Home pages.png",
+      href: "/services",
+      desc: "We support participants to build confidence and independence in everyday life.",
+    },
   ];
 
   return (
-    <section id="services" className="relative py-40 border-y border-slate-100 overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <Image src="/services-background.jpg" alt="Services section background" fill sizes="100vw" className="object-cover" quality={75} />
-        <div className="absolute inset-0 bg-slate-50/40" />
-      </div>
+    <section
+      id="services"
+      className="relative py-32 bg-[#F4F0E8]"
+    >
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end mb-32">
-          <div className="space-y-6">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#d97706]">Our Services Portfolio</p>
-            <h2 className="text-5xl md:text-6xl font-black text-slate-900 leading-[0.95] tracking-tighter">
-              Engineered <br /> for Independence.
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+
+        {/* HEADER */}
+
+        <FadeUp>
+
+          <div className="mb-20">
+
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#d97706] mb-5">
+              Our Services
+            </p>
+
+            <h2 className="text-5xl md:text-7xl font-black text-slate-950 leading-[0.9] tracking-tighter">
+
+              Practical support.
+
+              <br />
+
+              Personalised care.
+
             </h2>
-          </div>
-          <p className="text-slate-400 font-bold text-base md:text-lg leading-relaxed max-w-md lg:ml-auto lg:text-right">
-            Every support service vector is backed by meticulous training and an absolute obsession with personal care detail.
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {serviceItems.map((s, i) => (
-            <Link href={s.href} key={i}>
-              <motion.div
-                whileHover={{ y: -12 }}
-                className="group relative bg-white rounded-[3.5rem] border border-slate-200/60 shadow-sm overflow-hidden transition-all h-full cursor-pointer hover:shadow-[0_30px_60px_rgba(107,33,168,0.05)] flex flex-col justify-between"
+            <p className="mt-7 max-w-2xl text-slate-500 text-lg leading-relaxed">
+              Our services are designed to support everyday
+              independence, participation and wellbeing.
+            </p>
+
+          </div>
+
+        </FadeUp>
+
+        {/* SERVICE CARDS */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+          {serviceItems.map(
+            (service, index) => (
+              <Link
+                href={service.href}
+                key={index}
               >
-                <div>
-                  <div className="h-64 w-full overflow-hidden relative bg-slate-100">
+
+                <motion.div
+                  whileHover={{
+                    y: -8,
+                  }}
+                  className="group bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all h-full"
+                >
+
+                  {/* IMAGE */}
+
+                  <div className="h-56 relative overflow-hidden bg-slate-100">
+
                     <Image
-                      src={s.img}
-                      alt={s.title}
+                      src={service.img}
+                      alt={service.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent" />
+
                   </div>
-                  <div className="p-10">
-                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-[#6b21a8] transition-colors">
-                      {s.title}
+
+                  {/* CONTENT */}
+
+                  <div className="p-8">
+
+                    <h3 className="text-xl font-black text-slate-900 group-hover:text-[#6b21a8] transition-colors">
+                      {service.title}
                     </h3>
-                    <p className="text-slate-400 font-medium text-sm leading-relaxed">{s.desc}</p>
+
+                    <p className="mt-3 text-sm text-slate-500 leading-relaxed">
+                      {service.desc}
+                    </p>
+
+                    <div className="mt-6 text-[10px] font-black uppercase tracking-widest text-[#d97706]">
+                      Explore Service →
+                    </div>
+
                   </div>
-                </div>
-                <div className="px-10 pb-8 pt-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#d97706] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    Explore Plan →
-                  </span>
-                </div>
-              </motion.div>
-            </Link>
-          ))}
+
+                </motion.div>
+
+              </Link>
+            )
+          )}
+
         </div>
+
       </div>
+
     </section>
   );
 };
 
-/* ---------------- CTA ---------------- */
-export const CTA = () => (
-  <section className="relative py-40 px-6 md:px-12 overflow-hidden">
-    <div className="absolute inset-0 z-0">
-      <Image src="/cta-background.jpg" alt="Call to action background" fill sizes="100vw" className="object-cover" quality={75} />
-      <div className="absolute inset-0 bg-slate-950/60" />
-    </div>
+/* =========================================================
+   HOW IT WORKS
+========================================================= */
 
-    <div className="relative z-10 max-w-7xl mx-auto bg-gradient-to-br from-[#6b21a8] via-[#ec4899] to-[#b45309] rounded-[4rem] md:rounded-[5rem] p-12 md:p-20 text-center text-white shadow-[0_40px_100px_rgba(107,33,168,0.2)] overflow-hidden">
-      <div className="absolute -top-10 -right-10 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+const HowItWorks = () => {
+  const steps = [
+    {
+      number: "01",
+      title: "Contact us or submit a referral",
+      description:
+        "Get in touch with our team or complete a referral so we can understand how we can support you.",
+      icon: "📞",
+    },
+    {
+      number: "02",
+      title: "We discuss your needs",
+      description:
+        "We discuss the participant's needs, goals, preferences and preferred supports.",
+      icon: "💬",
+    },
+    {
+      number: "03",
+      title: "We match a suitable worker",
+      description:
+        "We work to match the participant with a suitable support worker based on their needs and preferences.",
+      icon: "🤝",
+    },
+    {
+      number: "04",
+      title: "We arrange commencement",
+      description:
+        "We arrange the service agreement and agree on a suitable commencement date.",
+      icon: "📅",
+    },
+  ];
 
-      <FadeUp>
-        <h2 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter leading-none">
-          Start your <br /> better tomorrow.
-        </h2>
-        <p className="text-purple-100 font-medium max-w-xl mx-auto mb-12 text-sm md:text-base leading-relaxed">
-          Get in touch with our intake coordinators today to perfectly build your custom routine management profile.
-        </p>
-        <Link href="/referral">
-          <button className="px-16 py-6 bg-white text-[#6b21a8] rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-103 transition-transform shadow-2xl relative z-10">
-            Submit a Referral
-          </button>
-        </Link>
-      </FadeUp>
-    </div>
-  </section>
-);
+  return (
+    <section
+      id="how-it-works"
+      className="relative py-32 overflow-hidden"
+    >
 
-/* ---------------- FOOTER ---------------- */
+      {/* =====================================================
+          HOW IT WORKS BACKGROUND IMAGE
+          LCP FIX: loading="eager" + priority
+      ===================================================== */}
+
+      <div className="absolute inset-0 z-0 overflow-hidden">
+
+        <Image
+          src="/How-It-Works.png"
+          alt="How It Works"
+          fill
+          loading="eager"
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover object-center opacity-[15%]"
+        />
+
+        {/* Soft warm blend */}
+
+        <div className="absolute inset-0 bg-white/55" />
+
+        {/* Strong readability layer */}
+
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-white/40" />
+
+        {/* Purple brand glow */}
+
+        <div className="absolute top-[-10rem] left-[-10rem] w-[32rem] h-[32rem] rounded-full bg-purple-400/10 blur-[140px]" />
+
+        {/* Pink brand glow */}
+
+        <div className="absolute bottom-[-10rem] right-[-10rem] w-[32rem] h-[32rem] rounded-full bg-pink-400/10 blur-[140px]" />
+
+        {/* Soft section transition */}
+
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+
+      </div>
+
+      {/* =====================================================
+          CONTENT
+      ===================================================== */}
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+
+        <FadeUp>
+
+          <div className="text-center max-w-3xl mx-auto mb-20">
+
+            <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.5em] text-[#d97706] mb-5">
+              How It Works
+            </p>
+
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-slate-950 tracking-[-0.05em] leading-[0.92]">
+
+              Simple steps.
+
+              <br />
+
+              Personalised support.
+
+            </h2>
+
+            <p className="mt-6 text-slate-600 text-lg leading-relaxed">
+              Starting support should be straightforward.
+              Our team guides you through each step.
+            </p>
+
+          </div>
+
+        </FadeUp>
+
+        {/* =================================================
+            STEPS
+        ================================================= */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {steps.map(
+            (step, index) => (
+              <FadeUp
+                key={index}
+                delay={index * 0.1}
+              >
+
+                <div className="relative h-full p-8 rounded-[2rem] bg-white/80 backdrop-blur-md border border-white/70 shadow-sm hover:border-purple-200 hover:shadow-xl transition-all">
+
+                  <div className="flex items-center justify-between mb-8">
+
+                    <span className="text-4xl">
+                      {step.icon}
+                    </span>
+
+                    <span className="text-5xl font-black text-purple-100">
+                      {step.number}
+                    </span>
+
+                  </div>
+
+                  <h3 className="text-xl font-black text-slate-950 leading-tight">
+                    {step.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm text-slate-500 leading-relaxed">
+                    {step.description}
+                  </p>
+
+                </div>
+
+              </FadeUp>
+            )
+          )}
+
+        </div>
+
+      </div>
+
+    </section>
+  );
+};
+
+/* =========================================================
+   CTA
+========================================================= */
+
+export const CTA = () => {
+  return (
+    <section className="relative py-32 px-6 md:px-12 overflow-hidden bg-[#F4F0E8]">
+
+      <div className="max-w-6xl mx-auto relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#6b21a8] via-[#b026d3] to-[#ec4899] p-12 md:p-20 text-center text-white shadow-2xl">
+
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 blur-[100px] rounded-full" />
+
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-purple-950/20 blur-[100px] rounded-full" />
+
+        <FadeUp>
+
+          <div className="relative z-10">
+
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">
+              Ready to get started?
+            </h2>
+
+            <p className="max-w-2xl mx-auto mt-7 text-purple-100 text-base md:text-lg leading-relaxed">
+              Tell us about your support needs and our team
+              can discuss the next steps with you.
+            </p>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
+
+              <Link
+                href="/referral"
+                className="px-10 py-5 rounded-2xl bg-white text-[#6b21a8] font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform"
+              >
+                Make a Referral
+              </Link>
+
+              <a
+                href="tel:0482911697"
+                className="px-10 py-5 rounded-2xl bg-white/10 border border-white/30 text-white font-black text-xs uppercase tracking-widest hover:bg-white/20 transition-all"
+              >
+                Contact Us Today
+              </a>
+
+            </div>
+
+          </div>
+
+        </FadeUp>
+
+      </div>
+
+    </section>
+  );
+};
+
+/* =========================================================
+   SMART FOOTER
+========================================================= */
+
 export const SmartFooter = () => {
   return (
-    <footer className="bg-slate-900 text-white pt-24 pb-12 border-t border-slate-800 relative overflow-hidden">
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-slate-800/60">
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 relative">
-              <Image src="/Eternal support.png" alt="Eternal Support Logo" fill sizes="40px" className="object-cover" />
+    <footer className="relative bg-slate-950 text-white overflow-hidden">
+
+      {/* DECORATIVE BACKGROUND */}
+
+      <div className="absolute top-0 left-[-10%] w-[35rem] h-[35rem] bg-purple-900/20 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="absolute bottom-0 right-[-10%] w-[35rem] h-[35rem] bg-pink-900/10 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="relative z-10">
+
+       
+
+              {/* COMPLIANCE LINKS */}
+
+              <div className="flex flex-wrap gap-3">
+
+                <Link
+                  href="/privacy"
+                  className="px-5 py-3 rounded-xl border border-slate-700 bg-slate-900/50 text-xs font-bold text-slate-300 hover:text-white hover:border-purple-500 transition-all"
+                >
+                  🔒 Privacy Policy
+                </Link>
+
+                <Link
+                  href="/feedback-complaints"
+                  className="px-5 py-3 rounded-xl border border-slate-700 bg-slate-900/50 text-xs font-bold text-slate-300 hover:text-white hover:border-pink-500 transition-all"
+                >
+                  💬 Feedback & Complaints
+                </Link>
+
+              </div>
+
             </div>
-            <span className="text-xl font-black tracking-tighter">
-              Eternal <span style={{ color: "#ec4899" }}>Support</span>
-            </span>
+
+          
+
+        
+
+        {/* ===================================================
+            MAIN FOOTER
+        =================================================== */}
+
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+
+            {/* BRAND */}
+
+            <div>
+
+              <div className="flex items-center gap-3">
+
+                <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-white shadow-lg">
+
+                  <Image
+                    src="/Eternal support.png"
+                    alt="Eternal Support Services"
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
+
+                </div>
+
+                <div>
+
+                  <div className="text-xl font-black">
+                    Eternal
+                  </div>
+
+                  <div className="text-xl font-black text-[#ec4899]">
+                    Support Services
+                  </div>
+
+                </div>
+
+              </div>
+
+              <p className="mt-7 text-sm text-slate-400 leading-relaxed max-w-sm">
+                Providing personalised support focused on
+                independence, participation, choice and
+                individual needs.
+              </p>
+
+              <div className="mt-7 inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.04] border border-slate-800">
+
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400">
+                  ✓
+                </span>
+
+                <div>
+
+                  <p className="text-[9px] uppercase tracking-[0.15em] text-slate-500 font-black">
+                    Provider Status
+                  </p>
+
+                  <p className="text-xs text-white font-bold mt-0.5">
+                    NDIS Registered Provider
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* SERVICES */}
+
+            <div>
+
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6">
+                Services
+              </p>
+
+              <div className="flex flex-col gap-3">
+
+                {serviceLinks
+                  .slice(0, 7)
+                  .map((service, index) => (
+                    <Link
+                      key={index}
+                      href={service.href}
+                      className="text-sm text-slate-400 hover:text-white hover:translate-x-1 transition-all"
+                    >
+                      {service.name}
+                    </Link>
+                  ))}
+
+              </div>
+
+            </div>
+
+            {/* INFORMATION */}
+
+            <div>
+
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6">
+                Information
+              </p>
+
+              <div className="flex flex-col gap-3">
+
+                <Link
+                  href="/"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  Home
+                </Link>
+
+                <Link
+                  href="/#how-it-works"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  How It Works
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  About Us
+                </Link>
+
+                <Link
+                  href="/referral"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  Make a Referral
+                </Link>
+
+                <Link
+                  href="/privacy"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  Privacy Policy
+                </Link>
+
+                <Link
+                  href="/feedback-complaints"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  Feedback & Complaints
+                </Link>
+
+                <Link
+                  href="/terms"
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  Terms & Conditions
+                </Link>
+
+              </div>
+
+            </div>
+
+            {/* CONTACT */}
+
+            <div>
+
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6">
+                Contact Us
+              </p>
+
+              <div className="space-y-6">
+
+                {/* PHONE */}
+
+                <div>
+
+                  <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
+                    Phone
+                  </span>
+
+                  <a
+                    href="tel:0482911697"
+                    className="flex items-center gap-3 text-white font-bold hover:text-pink-400 transition-colors"
+                  >
+
+                    <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-purple-500/10">
+                      📞
+                    </span>
+
+                    0482 911 697
+
+                  </a>
+
+                </div>
+
+                {/* EMAIL */}
+
+                <div>
+
+                  <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
+                    Email
+                  </span>
+
+                  <a
+                    href="mailto:admin@eternalsupportservice.com.au"
+                    className="flex items-start gap-3 text-white font-bold hover:text-pink-400 transition-colors break-all"
+                  >
+
+                    <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-pink-500/10 flex-shrink-0">
+                      ✉
+                    </span>
+
+                    <span className="pt-1">
+                      admin@eternalsupportservice.com.au
+                    </span>
+
+                  </a>
+
+                </div>
+
+                {/* LOCATION */}
+
+                <div>
+
+                  <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
+                    Location
+                  </span>
+
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    Melbourne Metro,
+                    <br />
+                    Victoria, Australia
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
-          <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
-            Providing premium human-centric infrastructure and individualized NDIS care plans.
+
+        </div>
+
+        {/* ===================================================
+            FEEDBACK & COMPLAINTS
+        =================================================== */}
+
+        <div className="border-t border-b border-slate-800">
+
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+
+            <div>
+
+              <div className="flex items-center gap-3">
+
+                <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.05] border border-slate-800">
+                  💬
+                </span>
+
+                <h4 className="text-base font-black text-white">
+                  Your feedback matters.
+                </h4>
+
+              </div>
+
+              <p className="mt-3 md:ml-[52px] text-sm text-slate-500 max-w-2xl leading-relaxed">
+                We welcome feedback about our services and
+                encourage participants, families and carers
+                to raise any concerns with us.
+              </p>
+
+            </div>
+
+            <Link
+              href="/feedback-complaints"
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white text-slate-950 text-[10px] font-black uppercase tracking-[0.15em] hover:bg-pink-50 hover:text-[#6b21a8] transition-all whitespace-nowrap"
+            >
+              Feedback & Complaints →
+            </Link>
+
+          </div>
+
+        </div>
+
+        {/* ===================================================
+            COPYRIGHT
+        =================================================== */}
+
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-5">
+
+          <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.15em] text-center md:text-left">
+            © 2026 Eternal Support Services. All Rights Reserved.
           </p>
 
-          <div className="flex flex-col gap-4 items-start pt-2">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Registered NDIS Provider</span>
-            </div>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[9px] text-slate-600 uppercase tracking-[0.15em] font-bold">
 
-            <div className="relative w-36 h-16 bg-white rounded-2xl px-3 py-2 shadow-inner flex items-center justify-center overflow-hidden">
-              <div className="relative w-full h-full">
-                <Image src="/ndis-logo.png" alt="NDIS Registered Provider Logo" fill sizes="120px" className="object-contain" />
-              </div>
-            </div>
+            <Link
+              href="/privacy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+
+            <Link
+              href="/feedback-complaints"
+              className="hover:text-white transition-colors"
+            >
+              Feedback & Complaints
+            </Link>
+
+            <Link
+              href="/terms"
+              className="hover:text-white transition-colors"
+            >
+              Terms
+            </Link>
+
           </div>
+
         </div>
 
-        <div className="space-y-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Services Directory</p>
-          <div className="grid grid-cols-1 gap-2">
-            {serviceLinks.map((service, index) => (
-              <Link key={index} href={service.href} className="text-xs font-bold text-slate-400 hover:text-white transition-colors duration-300 flex items-center gap-1.5 group">
-                <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px]" style={{ color: "#ec4899" }}>→</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-1">
-                  {service.name.split(" ").slice(1).join(" ") || service.name} Support
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
+      
 
-        <div className="space-y-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ecosystem Links</p>
-          <div className="flex flex-col gap-3.5">
-            <Link href="/" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Home Base</Link>
-            <Link href="/services" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Core Portfolio</Link>
-            <Link href="/about" className="text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition-colors">Corporate Identity</Link>
-            <Link href="/referral" className="text-xs font-black uppercase tracking-wider transition-colors" style={{ color: "#ec4899" }}>Submit a Referral →</Link>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Support Desks</p>
-          <div className="space-y-3 text-xs font-medium text-slate-400">
-            <p>
-              <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Headquarters Base</span>
-              Melbourne Metro, Victoria, Australia
-            </p>
-            <p>
-              <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Emergency Dispatch</span>
-              <a href="tel:0482911697" className="text-white font-bold hover:underline cursor-pointer">0482 911 697</a>
-            </p>
-            <p>
-              <span className="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Secure Gateway Email</span>
-              <a href="mailto:admin@eternalsupportservice.com.au" className="text-white font-bold hover:underline cursor-pointer">admin@eternalsupportservice.com.au</a>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em]">
-          © 2026 Eternal Support Ecosystem. All Rights Reserved.
-        </p>
-        <div className="flex gap-6 text-[9px] font-black uppercase tracking-widest text-slate-500">
-          <a href="#" className="hover:text-white transition-colors">Privacy Shield</a>
-          <a href="#" className="hover:text-white transition-colors">NDIS Compliance Charter</a>
-          <a href="#" className="hover:text-white transition-colors">Terms of Care</a>
-        </div>
-      </div>
     </footer>
   );
 };
 
-/* ---------------- FEEDBACK MODAL ---------------- */
-interface FeedbackModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+/* =========================================================
+   MAIN PAGE
+========================================================= */
 
-const FeedbackModal = ({ isOpen, onClose }: FeedbackModalProps) => {
-  const [form, setForm] = useState({ name: "", email: "", rating: "", message: "" });
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatus(null);
-
-    try {
-      const res = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setStatus({ type: "success", text: "Feedback submitted successfully!" });
-        setForm({ name: "", email: "", rating: "", message: "" });
-        setTimeout(() => onClose(), 2000);
-      } else {
-        setStatus({ type: "error", text: data.message || "Failed to submit feedback" });
-      }
-    } catch (error) {
-      console.error(error);
-      setStatus({ type: "error", text: "Something went wrong. Please check your network connection." });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
-          />
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="w-full max-w-xl bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.5)] p-8 md:p-10 relative overflow-hidden text-white z-10"
-          >
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-pink-500/10 blur-[80px] rounded-full pointer-events-none" />
-
-            <button
-              onClick={onClose}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 w-10 h-10 rounded-full flex items-center justify-center transition-all border border-white/10 text-lg"
-            >
-              ✕
-            </button>
-
-            <div className="mb-8">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[9px] font-black uppercase tracking-widest mb-2">
-                Continuous Evaluation
-              </span>
-              <h3 className="text-3xl font-black tracking-tight text-white">Share Your Experience</h3>
-              <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
-                Your immediate direct perspective structures our care provision roadmap.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all shadow-inner"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="Your Email"
-                    className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all shadow-inner"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Experience Scale</label>
-                <div className="relative">
-                  <select
-                    name="rating"
-                    required
-                    value={form.rating}
-                    onChange={handleChange}
-                    className="w-full bg-[#161224] border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs focus:outline-none transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="" className="text-slate-500">Select Rating</option>
-                    <option value="5 Stars">⭐⭐⭐⭐⭐ Excellent Experience</option>
-                    <option value="4 Stars">⭐⭐⭐⭐ Good Support Standard</option>
-                    <option value="3 Stars">⭐⭐⭐ Average Quality</option>
-                    <option value="2 Stars">⭐⭐ Poor Evaluation</option>
-                    <option value="1 Star">⭐ Critical Optimization Needed</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 text-[10px]">▼</div>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Detailed Feedback Record</label>
-                <textarea
-                  name="message"
-                  required
-                  rows={4}
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder="Please write down your detailed testimonial or system support notes here..."
-                  className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 rounded-xl p-3.5 text-white text-xs placeholder:text-slate-600 focus:outline-none transition-all resize-none leading-relaxed"
-                />
-              </div>
-
-              <AnimatePresence mode="wait">
-                {status && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className={`p-3 rounded-xl border text-[11px] font-semibold flex items-center gap-2 ${
-                      status.type === "success"
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                    }`}
-                  >
-                    <span>{status.type === "success" ? "✨" : "⚠️"}</span>
-                    <p>{status.text}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-[#6b21a8] to-[#ec4899] text-white py-4 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:shadow-purple-500/20 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-98 transition-all"
-              >
-                {loading ? (
-                  <>
-                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Broadcasting Logs...
-                  </>
-                ) : (
-                  "Submit Feedback"
-                )}
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-/* ---------------- MAIN EXPORT ---------------- */
 export default function EternalSupportPage() {
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
-    <main className="bg-white selection:bg-[#6b21a8] selection:text-white antialiased min-h-screen relative">
+    <main className="bg-[#F4F0E8] selection:bg-[#6b21a8] selection:text-white antialiased min-h-screen">
+
       <Navbar />
+
       <Hero />
+
+      <WhoWeSupport />
+
       <Services />
+
+      <HowItWorks />
+
       <CTA />
+
       <SmartFooter />
 
-      <motion.button
-        onClick={() => setModalOpen(true)}
-        whileHover={{ scale: 1.05, x: -4 }}
-        whileTap={{ scale: 0.95 }}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-[150] bg-gradient-to-l from-[#ec4899] to-[#6b21a8] text-white pl-4 pr-5 py-3.5 rounded-l-2xl shadow-[0_10px_30px_rgba(236,72,153,0.3)] font-black text-[10px] uppercase tracking-widest flex items-center gap-2 border-y border-l border-white/20 hover:shadow-[0_15px_40px_rgba(236,72,153,0.5)] transition-all"
-      >
-        <span className="text-sm">✍️</span>
-        <span className="hidden sm:inline">Feedback</span>
-      </motion.button>
-
-      <FeedbackModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
 }
