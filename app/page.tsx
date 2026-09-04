@@ -140,7 +140,7 @@ export const Navbar = () => {
           <Link href="/" className="flex items-center gap-3">
             <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shadow-md">
               <Image
-                src="/Eternal support.png"
+                src="/LOGO.png"
                 alt="Eternal Support Services Logo"
                 fill
                 sizes="56px"
@@ -477,7 +477,7 @@ const Services = () => {
     },
     {
       title: "Transport Assistance",
-      img: "/Transport Assistance.jpg",
+      img: "/Transport Assistance.png",
       href: "/services",
       desc: "Transport for appointments, shopping, outings and activities.",
     },
