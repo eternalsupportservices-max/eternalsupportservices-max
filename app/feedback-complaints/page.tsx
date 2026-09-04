@@ -517,7 +517,7 @@ export default function FeedbackComplaintsPage() {
 
             <motion.a
               whileHover={{ y: -6 }}
-              href="tel:0482911697"
+              href="mailto:admin@eternalsupportservice.com.au?subject=Feedback%20or%20Complaint"
               className="rounded-[2rem] bg-[#F8F5F9] border border-slate-100 p-8 hover:shadow-xl transition-all"
             >
 

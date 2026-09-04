@@ -129,15 +129,11 @@ export default function AboutPage() {
 
             <FadeUp delay={0.3}>
               <p className="text-slate-500 font-medium text-lg leading-relaxed">
-                Eternal Support Services is committed to providing premium, highly personalized disability support systems tailored specifically to match each participant's personal goals, dynamic routines, and lifestyle choice parameters.
+                Eternal Support Services is committed to providing premium, highly personalised disability support systems tailored specifically to match each participant's personal goals, dynamic routines, and lifestyle choice parameters.Our meticulously trained, experienced support teams focus explicitly on cultivating long-term positive outcomes through deeply respectful care frameworks, meaningful local group involvement, and robust independent living skill pathways.
               </p>
             </FadeUp>
 
-            <FadeUp delay={0.4}>
-              <p className="text-slate-400 font-bold text-base leading-relaxed">
-                Our meticulously trained, experienced support teams focus explicitly on cultivating long-term positive outcomes through deeply respectful care frameworks, meaningful local group involvement, and robust independent living skill pathways.
-              </p>
-            </FadeUp>
+            
           </div>
 
         </div>
@@ -234,7 +230,7 @@ export default function AboutPage() {
             </p>
 
             <div className="pt-4">
-              <Link href="/join">
+              <Link href="/referral">
                 <button className="px-16 py-6 bg-white text-[#6b21a8] rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-103 active:scale-97 transition-all shadow-2xl relative z-10">
                   Make a Referral Now
                 </button>

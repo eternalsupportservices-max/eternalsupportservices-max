@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   motion,
-  AnimatePresence,
   useScroll,
   useTransform,
 } from "framer-motion";
@@ -116,7 +115,7 @@ export const Navbar = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-2">
 
           <a
-            href="tel:0482911697"
+            href="/referral"
             className="text-xs font-bold hover:text-pink-400 transition-colors"
           >
             📞 0482 911 697
@@ -134,11 +133,17 @@ export const Navbar = () => {
 
       {/* MAIN NAV */}
       <nav className="bg-[#F4F0E8]/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
 
           {/* LOGO */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="flex items-center gap-3"
+          >
+
             <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shadow-md">
+
               <Image
                 src="/LOGO.png"
                 alt="Eternal Support Services Logo"
@@ -147,20 +152,26 @@ export const Navbar = () => {
                 priority
                 className="object-cover"
               />
+
             </div>
 
             <div className="hidden sm:block">
+
               <div className="text-lg md:text-xl font-black text-slate-950">
                 Eternal
               </div>
+
               <div className="text-lg md:text-xl font-black text-[#ec4899]">
                 Support Services
               </div>
+
             </div>
+
           </Link>
 
           {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-8">
+
             <Link
               href="/"
               className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 hover:text-[#6b21a8] transition-colors"
@@ -195,9 +206,10 @@ export const Navbar = () => {
             >
               Make a Referral
             </Link>
+
           </div>
 
-          {/* MOBILE HOME BUTTON */}
+          {/* MOBILE BUTTON */}
           <Link
             href="/referral"
             className="md:hidden px-4 py-3 rounded-xl bg-[#6b21a8] text-white text-[9px] font-black uppercase tracking-wider"
@@ -206,7 +218,9 @@ export const Navbar = () => {
           </Link>
 
         </div>
+
       </nav>
+
     </header>
   );
 };
@@ -227,10 +241,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center pt-44 pb-24 overflow-hidden">
 
-      {/* =====================================================
-          BACKGROUND IMAGE
-      ===================================================== */}
-
+      {/* BACKGROUND */}
       <div className="absolute inset-0 z-0 overflow-hidden">
 
         <Image
@@ -251,14 +262,9 @@ const Hero = () => {
 
       </div>
 
-      {/* =====================================================
-          DECORATIVE GRADIENTS
-      ===================================================== */}
-
+      {/* DECORATIVE GRADIENTS */}
       <motion.div
-        style={{
-          opacity,
-        }}
+        style={{ opacity }}
         className="absolute inset-0 pointer-events-none z-[1]"
       >
 
@@ -268,21 +274,21 @@ const Hero = () => {
 
       </motion.div>
 
-      {/* =====================================================
-          HERO CONTENT
-      ===================================================== */}
-
+      {/* HERO CONTENT */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
 
         <div className="max-w-6xl pt-24 sm:pt-28 md:pt-32">
 
-          {/* =====================================================
-              NDIS LOGO - RIGHT SIDE
-          ===================================================== */}
-
+          {/* NDIS LOGO */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{
+              opacity: 0,
+              x: 50,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
             transition={{
               duration: 0.8,
               delay: 0.3,
@@ -304,6 +310,7 @@ const Hero = () => {
               xl:w-[260px]
             "
           >
+
             <Image
               src="/NDIS.png"
               alt="NDIS"
@@ -319,10 +326,10 @@ const Hero = () => {
                 drop-shadow-[0_12px_25px_rgba(0,0,0,0.12)]
               "
             />
+
           </motion.div>
 
           {/* TITLE */}
-
           <FadeUp delay={0.2}>
 
             <h1 className="text-[58px] sm:text-[75px] md:text-[95px] lg:text-[105px] xl:text-[115px] font-black leading-[0.82] tracking-[-0.07em] text-slate-950">
@@ -340,7 +347,6 @@ const Hero = () => {
           </FadeUp>
 
           {/* DESCRIPTION */}
-
           <FadeUp delay={0.3}>
 
             <p className="mt-10 max-w-3xl text-lg md:text-2xl text-slate-600 font-medium leading-relaxed">
@@ -350,7 +356,6 @@ const Hero = () => {
           </FadeUp>
 
           {/* BUTTONS */}
-
           <FadeUp delay={0.4}>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-10">
@@ -363,7 +368,7 @@ const Hero = () => {
               </Link>
 
               <a
-                href="tel:0482911697"
+                href="/referral"
                 className="inline-flex justify-center items-center px-10 py-5 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-900 font-black text-xs uppercase tracking-[0.18em] shadow-lg hover:-translate-y-1 transition-all"
               >
                 Contact Us Today
@@ -450,6 +455,7 @@ const WhoWeSupport = () => {
 ========================================================= */
 
 const Services = () => {
+
   const serviceItems = [
     {
       title: "In-Home Support",
@@ -494,7 +500,7 @@ const Services = () => {
       desc: "Individualised support for children and young people.",
     },
     {
-      title: "Supported Independent Living",
+      title: "Supported Independent Living(SIL)",
       img: "/Supported Independent Living.png",
       href: "/services",
       desc: "Available once approved.",
@@ -522,7 +528,6 @@ const Services = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
 
         {/* HEADER */}
-
         <FadeUp>
 
           <div className="mb-20">
@@ -551,11 +556,11 @@ const Services = () => {
         </FadeUp>
 
         {/* SERVICE CARDS */}
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
 
           {serviceItems.map(
             (service, index) => (
+
               <Link
                 href={service.href}
                 key={index}
@@ -569,7 +574,6 @@ const Services = () => {
                 >
 
                   {/* IMAGE */}
-
                   <div className="h-56 relative overflow-hidden bg-slate-100">
 
                     <Image
@@ -583,7 +587,6 @@ const Services = () => {
                   </div>
 
                   {/* CONTENT */}
-
                   <div className="p-8">
 
                     <h3 className="text-xl font-black text-slate-900 group-hover:text-[#6b21a8] transition-colors">
@@ -603,6 +606,7 @@ const Services = () => {
                 </motion.div>
 
               </Link>
+
             )
           )}
 
@@ -619,6 +623,7 @@ const Services = () => {
 ========================================================= */
 
 const HowItWorks = () => {
+
   const steps = [
     {
       number: "01",
@@ -656,11 +661,7 @@ const HowItWorks = () => {
       className="relative py-32 overflow-hidden"
     >
 
-      {/* =====================================================
-          HOW IT WORKS BACKGROUND IMAGE
-          LCP FIX: loading="eager" + priority
-      ===================================================== */}
-
+      {/* BACKGROUND */}
       <div className="absolute inset-0 z-0 overflow-hidden">
 
         <Image
@@ -674,32 +675,19 @@ const HowItWorks = () => {
           className="object-cover object-center opacity-[15%]"
         />
 
-        {/* Soft warm blend */}
-
         <div className="absolute inset-0 bg-white/55" />
-
-        {/* Strong readability layer */}
 
         <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-white/40" />
 
-        {/* Purple brand glow */}
-
         <div className="absolute top-[-10rem] left-[-10rem] w-[32rem] h-[32rem] rounded-full bg-purple-400/10 blur-[140px]" />
 
-        {/* Pink brand glow */}
-
         <div className="absolute bottom-[-10rem] right-[-10rem] w-[32rem] h-[32rem] rounded-full bg-pink-400/10 blur-[140px]" />
-
-        {/* Soft section transition */}
 
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
 
       </div>
 
-      {/* =====================================================
-          CONTENT
-      ===================================================== */}
-
+      {/* CONTENT */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
         <FadeUp>
@@ -729,14 +717,12 @@ const HowItWorks = () => {
 
         </FadeUp>
 
-        {/* =================================================
-            STEPS
-        ================================================= */}
-
+        {/* STEPS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
           {steps.map(
             (step, index) => (
+
               <FadeUp
                 key={index}
                 delay={index * 0.1}
@@ -767,6 +753,7 @@ const HowItWorks = () => {
                 </div>
 
               </FadeUp>
+
             )
           )}
 
@@ -815,7 +802,7 @@ export const CTA = () => {
               </Link>
 
               <a
-                href="tel:0482911697"
+                href="mailto:admin@eternalsupportservice.com.au"
                 className="px-10 py-5 rounded-2xl bg-white/10 border border-white/30 text-white font-black text-xs uppercase tracking-widest hover:bg-white/20 transition-all"
               >
                 Contact Us Today
@@ -842,74 +829,56 @@ export const SmartFooter = () => {
     <footer className="relative bg-slate-950 text-white overflow-hidden">
 
       {/* DECORATIVE BACKGROUND */}
-
       <div className="absolute top-0 left-[-10%] w-[35rem] h-[35rem] bg-purple-900/20 blur-[140px] rounded-full pointer-events-none" />
 
       <div className="absolute bottom-0 right-[-10%] w-[35rem] h-[35rem] bg-pink-900/10 blur-[140px] rounded-full pointer-events-none" />
 
+      {/* =====================================================
+          MAIN FOOTER
+      ===================================================== */}
+
       <div className="relative z-10">
-
-       
-
-              {/* COMPLIANCE LINKS */}
-
-              <div className="flex flex-wrap gap-3">
-
-                <Link
-                  href="/privacy"
-                  className="px-5 py-3 rounded-xl border border-slate-700 bg-slate-900/50 text-xs font-bold text-slate-300 hover:text-white hover:border-purple-500 transition-all"
-                >
-                  🔒 Privacy Policy
-                </Link>
-
-                <Link
-                  href="/feedback-complaints"
-                  className="px-5 py-3 rounded-xl border border-slate-700 bg-slate-900/50 text-xs font-bold text-slate-300 hover:text-white hover:border-pink-500 transition-all"
-                >
-                  💬 Feedback & Complaints
-                </Link>
-
-              </div>
-
-            </div>
-
-          
-
-        
-
-        {/* ===================================================
-            MAIN FOOTER
-        =================================================== */}
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
 
-            {/* BRAND */}
+            {/* =================================================
+                BRAND
+            ================================================= */}
 
             <div>
 
               <div className="flex items-center gap-3">
 
-                <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-white shadow-lg">
+                {/* ============================================
+                    FOOTER LOGO
+                    50px × 50px
+                ============================================ */}
+
+                <Link
+                  href="/"
+                  className="relative w-[50px] h-[50px] rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0 block"
+                >
 
                   <Image
-                    src="/Eternal support.png"
+                    src="/LOGO.png"
                     alt="Eternal Support Services"
                     fill
-                    sizes="56px"
+                    sizes="50px"
                     className="object-cover"
                   />
 
-                </div>
+                </Link>
 
-                <div>
+                {/* BRAND NAME */}
+                <div className="leading-tight">
 
-                  <div className="text-xl font-black">
+                  <div className="text-lg font-black text-white">
                     Eternal
                   </div>
 
-                  <div className="text-xl font-black text-[#ec4899]">
+                  <div className="text-lg font-black text-[#ec4899]">
                     Support Services
                   </div>
 
@@ -923,6 +892,7 @@ export const SmartFooter = () => {
                 individual needs.
               </p>
 
+              {/* PROVIDER STATUS */}
               <div className="mt-7 inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.04] border border-slate-800">
 
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400">
@@ -945,7 +915,9 @@ export const SmartFooter = () => {
 
             </div>
 
-            {/* SERVICES */}
+            {/* =================================================
+                SERVICES
+            ================================================= */}
 
             <div>
 
@@ -958,6 +930,7 @@ export const SmartFooter = () => {
                 {serviceLinks
                   .slice(0, 7)
                   .map((service, index) => (
+
                     <Link
                       key={index}
                       href={service.href}
@@ -965,13 +938,16 @@ export const SmartFooter = () => {
                     >
                       {service.name}
                     </Link>
+
                   ))}
 
               </div>
 
             </div>
 
-            {/* INFORMATION */}
+            {/* =================================================
+                INFORMATION
+            ================================================= */}
 
             <div>
 
@@ -1034,7 +1010,9 @@ export const SmartFooter = () => {
 
             </div>
 
-            {/* CONTACT */}
+            {/* =================================================
+                CONTACT
+            ================================================= */}
 
             <div>
 
@@ -1045,7 +1023,6 @@ export const SmartFooter = () => {
               <div className="space-y-6">
 
                 {/* PHONE */}
-
                 <div>
 
                   <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
@@ -1068,7 +1045,6 @@ export const SmartFooter = () => {
                 </div>
 
                 {/* EMAIL */}
-
                 <div>
 
                   <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
@@ -1093,7 +1069,6 @@ export const SmartFooter = () => {
                 </div>
 
                 {/* LOCATION */}
-
                 <div>
 
                   <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-600 mb-2 font-black">
@@ -1194,7 +1169,7 @@ export const SmartFooter = () => {
 
         </div>
 
-      
+      </div>
 
     </footer>
   );
@@ -1205,7 +1180,9 @@ export const SmartFooter = () => {
 ========================================================= */
 
 export default function EternalSupportPage() {
+
   return (
+
     <main className="bg-[#F4F0E8] selection:bg-[#6b21a8] selection:text-white antialiased min-h-screen">
 
       <Navbar />
@@ -1223,5 +1200,6 @@ export default function EternalSupportPage() {
       <SmartFooter />
 
     </main>
+
   );
 }
